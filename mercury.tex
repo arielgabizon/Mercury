@@ -89,6 +89,8 @@
 \newcommand{\bgamma}{\boldsymbol{\gamma}}
 \newcommand{\bsigma}{\boldsymbol{\sigma}}
 \newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}\xspace}
+\newcommand{\gemini}{\ensuremath{\mathsf{gemini}}\xspace}
+\newcommand{\mercury}{\ensuremath{\mathpgoth{MERCURY} }\xspace}
 \newcommand{\cq}{\ensuremath{\mathpgoth{cq}}\xspace}
 \newcommand{\cqlin}{\ensuremath{\mathpgoth{cq}\mathscr{\text{\calligra{lin}}}}\xspace}
 \newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}}}}\xspace}
@@ -106,31 +108,16 @@
 \newcommand{\relbase}{\ensuremath{\rel_0}\xspace}
 \mathchardef\mhyphen="2D
 
-\newcommand{\Patrick}[1]{\textcolor{blue}{{\bf Patrick}: #1}}
 
 \newcommand{\instbase}{\ensuremath{\inst_0}\xspace}
 \newcommand{\witbase}{\ensuremath{\wit_0}\xspace}
 
 
-\newcommand{\papertitle}{\stackproofs: Private proofs of stack and contract execution using \protogal}
-%\newcommand{\authorname}}
+\newcommand{\papertitle}{\mercury: A multilinear Polynomial Commitment Scheme with constant proof size and no prover FFTs}
+
 \newcommand{\company}{}
-\title{ \papertitle \\[0.72cm]}
-% \author{}
-% \author{ Liam Eagen \\ \tt{Alpen Labs}   \and Ariel Gabizon \\ \tt{Zeta Function Technologies} }
-\author[1]{Liam Eagen}
-\author[2]{Ariel Gabizon}
-\author[3]{Marek Sefranek}
-\author[2]{Patrick Towa}
-\author[2]{Zachary J. Williamson}
-\affil[1]{Alpen Labs}
-\affil[2]{Aztec Labs}
-\affil[3]{TU Wien}
-%
-% \large{\authorname} \\[0.5cm] \large{\company}
-% \\ {DRAFT}
-%}
-%\date{} % activate to display a given date or no date (if empty),
+\title{ \bf \papertitle \\[0.72cm]}
+\author{ Liam Eagen \\ \tt{Alpen Labs}   \and Ariel Gabizon \\ \tt{Aztec Labs} } 
 
 % otherwise the current date is printed
 \DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}
@@ -179,7 +166,7 @@
 \newcommand{\srs}{\ensuremath{\mathsf{srs}}\xspace}
 \newcommand{\regsrs}[1]{\ensuremath{\sett{\enc1{x^i}}{i\in \set{0,\ldots,#1-1}}}\xspace}
 \newcommand{\srsm}{\ensuremath{\mathsf{srs}_M}\xspace}
-\newcommand{\srsext}{\ensuremath{\mathsf{srs^*}}\xspace}
+\newcommand{\ext}{\ensuremath{E}\xspace}
 \newcommand{\srsbase}{\ensuremath{\mathsf{srs_0}}\xspace}
 \newcommand{\srsi}{\ensuremath{\mathsf{srs_i}}\xspace}
 \newcommand{\com}{\ensuremath{\mathsf{com}}\xspace}
@@ -206,7 +193,7 @@
 \newcommand{\polprot}[4]{$(#1,#2,#3,#4)$-polynomial protocol}
 \newcommand{\rangedprot}[5]{$#5$-ranged $(#1,#2,#3,#4)$-polynomial protocol}
 
-\newcommand{\rej}{\ensuremath{\mathsf{reject}}\xspace}
+\newcommand{\rej}{\shlomomath{reject}}
 \newcommand{\accept}{\ensuremath{\mathsf{accept}}\xspace}
 \newcommand{\res}{\ensuremath{\mathsf{res}}\xspace}
 % \newcommand{\sha}[1]{\ensuremath{\mathsf{COMMIT}(#1)}\xspace}
@@ -214,14 +201,8 @@
  \newcommand{\comm}[1]{\ensuremath{\enc1{#1(x)}}\xspace}
  \newcommand{\defeq}{:=}
 
-\newcommand{\B}{\ensuremath{\set{0,1}}\xspace}
 \newcommand{\dom}{\ensuremath{H}\xspace}
 \newcommand{\C}{\ensuremath{\vec{C}}\xspace}
-\newcommand{\Btwo}{\ensuremath{\vec{B_2}}\xspace}
-\newcommand{\treevecsimp}{\ensuremath{(\tau,\rho_A,\rho_A \rho_B,\rho_A\alpha_A,\rho_A\rho_B\alpha_B, \rho_A\rho_B\alpha_C,\beta,\beta\gamma)}\xspace}% The sets of elements used in simplifed relation tree in main text body
-\newcommand{\rcptc}{random-coefficient subprotocol\xspace}
-\newcommand{\rcptcparams}[2]{\ensuremath{\mathrm{RCPC}(#1,#2)}\xspace}
-\newcommand{\verifyrcptcparams}[2]{\ensuremath{\mathrm{\mathsf{verify}RCPC}(#1,#2)}\xspace}
 \newcommand{\randadv}{\ensuremath{\mathsf{rand}_{\adv}}\xspace}
  \num\newcommand{\ex1}[1]{\ensuremath{#1\cdot g_1}\xspace}
  \num\newcommand{\ex2}[1]{\ensuremath{#1\cdot g_2}\xspace}
@@ -246,9 +227,12 @@
 \renewcommand{\sim}{\ensuremath{\mathrm{S}}\xspace}
 \renewcommand{\mod}{\ensuremath{\;\mathrm{mod}\;}}
 \newcommand{\hsub}{\ensuremath{H^*}\xspace}
-\num\newcommand{\enc1}[1]{\ensuremath{\left[#1\right]_1}\xspace}
+% \num\newcommand{\enc1}[1]{\ensuremath{\left[#1\right]_1}\xspace}
 \newcommand{\enci}[1]{\ensuremath{\left[#1\right]_i}\xspace}
-\num\newcommand{\enc2}[1]{\ensuremath{\left[#1\right]_2}\xspace}
+% \num\newcommand{\enc2}[1]{\ensuremath{\left[#1\right]_2}\xspace}
+
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right]_1}\xspace}
+\newcommand{\enctwo}[1]{\ensuremath{\left[#1\right]_2}\xspace}
 \newcommand{\gen}{\ensuremath{\mathsf{gen}}\xspace}
 \newcommand{\hgen}{\ensuremath{\omega}\xspace}
 \newcommand{\gops}{\G1-operations\xspace}
@@ -324,7 +308,7 @@
  \newcommand{\secrets}{\ensuremath{\mathsf{secrets}}\xspace}
  \newcommand{\polysofdeg}[1]{\ensuremath{\F_{< #1}[X]}\xspace}
  \newcommand{\polysofdegeq}[1]{\ensuremath{\F_{\leq #1}[X]}\xspace}
- \newcommand{\pols}{\ensuremath{\F[X]}\xspace}
+ \newcommand{\polys}{\ensuremath{\F[X]}\xspace}
  \newcommand{\bivar}[1]{\ensuremath{\F_{< #1}[X,Y]}\xspace}
  \newcommand{\sig}{\ensuremath{\mathscr{S}}\xspace}
  \newcommand{\prot}{\ensuremath{\mathscr{P}}\xspace}
@@ -363,11 +347,11 @@
 \newcommand{\constsystem}{\ensuremath{\mathscr{C}}\xspace}
 \newcommand{\relof}[1]{\ensuremath{\rel_{#1}}\xspace}
 \newcommand{\pubinppoly}{\ensuremath{\mathsf{PI}}\xspace}
-\newcommand{\sumi}[1]{\sum_{i\in[#1]}}
+\newcommand{\sumi}[1]{\sum_{i< #1}}
 \newcommand{\sumzertok}[1]{\sum_{#1=0}^{k}}
 \newcommand{\sumpoly}[1]{\sum_{i=0}^{#1-1}}
 \newcommand{\summ}[1]{\sum_{i\in[#1]}}
-\newcommand{\sumj}[1]{\sum_{j\in[#1]}}
+\newcommand{\sumj}[1]{\sum_{j< #1}}
 \newcommand{\innerprod}[2]{\langle#1,#2\rangle}
 \newcommand{\ZeroH}{\ensuremath{Z_H} \xspace}
 \newcommand{\lpoly}{\ensuremath{\mathsf{a}}\xspace}
@@ -489,6 +473,8 @@
 \newcommand{\vc}{\ensuremath{\mathsf{c_v}}\xspace}
 \renewcommand{\v}{\ensuremath{\mathsf{v}}\xspace}
 \renewcommand{\r}{\ensuremath{\mathsf{r}}\xspace}
+\newcommand{\h}{\ensuremath{\mathsf{h}}\xspace}
+\renewcommand{\d}{\ensuremath{\mathsf{d}}\xspace}
 \newcommand{\f}{\ensuremath{\mathsf{f}}\xspace}
 \renewcommand{\g}{\ensuremath{\mathsf{g}}\xspace}
 \newcommand{\matrices}{\ensuremath{\F^{n\times n}}\xspace}
@@ -553,41 +539,318 @@
 \newcommand{\instnoops}{\ensuremath{\mathbf{x}}\xspace}
  \renewcommand{\path}{\ensuremath{\mathbf{p}}\xspace}
 \renewcommand{\root}{\ensuremath{\mathbf{r}}\xspace}
+\renewcommand{\eq}{\ensuremath{\mathbf{eq}}\xspace}
+\newcommand{\eqpol}[1]{\ensuremath{P_{#1}}\xspace}
+\newcommand{\mle}[1]{\ensuremath{\mathsf{ml}(#1)}\xspace}
 \newcommand{\predinst}{\ensuremath{\mathpgoth{f}}\xspace}
 \renewcommand{\empty}{\ensuremath{g_{\mathscr{empty}}}\xspace}
 \newcommand{\funcs}{\ensuremath{\mathsf{F}}\xspace}
+\newcommand{\prob}{\ensuremath{\mathsf{prob}}\xspace}
 \newcommand{\ztafuncs}{\ensuremath{\mathcal{D}}\xspace}
+\newcommand{\prodt}{\ensuremath{\prod_{i=1}^t}\xspace}
+\newcommand{\B}[1]{\ensuremath{\set{0,1}^{#1}}\xspace}
+\newcommand{\shlomomath}[1]{\ensuremath{\text{\usefont{U}{BOONDOX-cal}{m}{n}#1}}\xspace}
+\newcommand{\acc}{\ensuremath{\shlomomath{accept}}\xspace}
+\newcommand{\mlpcs}{ml-PCS\xspace}
+\renewcommand{\zeta}{\mathfrak{z}}
+\newcommand{\qzeta}{\ensuremath{q_{\zeta}}\xspace}
+\newcommand{\fzeta}{\ensuremath{f_{\zeta}}\xspace}
+\newcommand{\prfzeta}{\ensuremath{\prf_{\zeta}}\xspace}
+\newcommand{\prfother}{\ensuremath{\prf'}\xspace}
+\newcommand{\gzeta}{\ensuremath{g_{\zeta}}\xspace}
+\newcommand{\dzeta}{\ensuremath{D_{\zeta}}\xspace}
+\newcommand{\szeta}{\ensuremath{s_{\zeta}}\xspace}
+\newcommand{\hzeta}{\ensuremath{h_{\zeta}}\xspace}
+\newcommand{\ginv}{\ensuremath{\bar{g}_{\zeta}}\xspace}
+\newcommand{\hinv}{\ensuremath{\bar{h}_{\zeta}}\xspace}
+\newcommand{\sinv}{\ensuremath{\bar{s}_{\zeta}}\xspace}
+\newcommand{\halpha}{\ensuremath{h_{\alpha}}\xspace}
 % \newcommand{\instF}{\ensuremath{\mathrm{x}}\xspace}
 % \newcommand{\witF}{\ensuremath{\mathrm{w}}\xspace}
-\newcommand{\instexec}{\ensuremath{\mathrm{x_{exec}}}\xspace}
-\newcommand{\witexec}{\ensuremath{\mathrm{w_{exec}}}\xspace}
-\newcommand{\witf}{\ensuremath{\mathsf{w_f}}\xspace}
-\newcommand{\sel}{\ensuremath{\mathsf{q}}\xspace}
-% \newcommand{\perm}{\ensuremath{\mathsf{s}}\xspace}
-\newcommand{\args}{\ensuremath{\mathsf{args}}\xspace}
-\newcommand{\callnum}{\ensuremath{\mathsf{c}}\xspace}
-\newcommand{\recset}{\ensuremath{\mathsf{V}}\xspace}
-\newcommand{\tree}{\ensuremath{\mathsf{T}}\xspace}
-\newcommand{\node}{\ensuremath{\mathsf{n}}\xspace}
-\newcommand{\incsum}{\ensuremath{\mathscr{s}}\xspace}
-\newcommand{\inchash}{\ensuremath{\mathscr{h}}\xspace}
-\newcommand{\shlomomath}[1]{\ensuremath{\text{\usefont{U}{BOONDOX-cal}{m}{n}#1}}\xspace}
-\newcommand{\calligmath}[1]{\ensuremath{\text{\calligra{#1}}}\xspace}
-\newcommand{\ext}{\ensuremath{\mathbf{E}}\xspace}
-\newcommand{\finpred}{\shlomomath{f}}
-\newcommand{\zksnark}{zk-SNARK\;}
-\newcommand{\n}{\shlomomath{n}}
-\newcommand{\dimK}{\calligmath{k}}
-\newcommand{\M}{\calligmath{M}}
-\newcommand{\cmsetup}{\ensuremath{r_\cm}\xspace}
-\newcommand{\relrcg}{\ensuremath{\rel_{F,\finpred}}\xspace}
-\newcommand{\relzer}{\ensuremath{\rel_{0}}\xspace}
-\newcommand{\relrcgstar}{\ensuremath{\rel_{F^*,\finpred^*}}\xspace}
 \begin{document}
     \maketitle
 \begin{abstract}
+We construct a polynomial commitment scheme for multilinear polynomials  of size $n$ where
+constructing an opening proof requires  $O(n)$ field operations, and $2n+O(\sqrt n)$ scalar multiplications. Moreover,
+the opening proof consists of a constant number of field elements.
+This is a significant improvement over previous works which would require either
+\begin{enumerate}
+ \item $O(n\log n)$ field operations; or
+ \item $O(\log n)$ size opening proof.
+\end{enumerate}
+The new technical component is a ``folding'' of the witness via univariate polynomial division. As opposed to more familiar folding methods - e.g. as used in the sumcheck protocol; this method allows to fold the witness by a \emph{super-constant} factor with a \emph{linear} number of field operations and scalar multiplications.
 \end{abstract}
 \section{Introduction}
+
+
+
+
+\section{Overview of technique}
+\begin{remark}
+ In this overview, we use some of the notation defined in Sections \ref{sec:terminology} and \ref{sec:multilin-polys}.
+\end{remark}
+
+Our technique is best thought of as an improvement of the \mlpcs from \gemini \cite{gemini}.
+Let us start by recalling how \gemini works.
+\gemini commits to the multilinear function as a \emph{univariate}. Specifically,
+suppose given a vector $a\in \F^n$, and a structured reference string of elements \sett{\enc{x^i}}{i<n}. \gemini
+outputs $\sumi{n}a_i \enc{x^i}$ as a commitment to the multilinear function $\mle{a}(u)= \sumi{n}\eq(i,u) a_i$ where $u\in \F^{\log n}$.
+
+Recall that an MLE evaluation claim can be written in terms of a sumcheck over the values of the MLE over the boolean cube, weighted by the \eq function:
+$$ \hat{f}(u) = \sum_{b \in B_n} \hat{eq}(b, u) \hat{f}(b). $$
+
+This allows us to generically reduce the problem of MLE evaluation to a degree $2$ sumcheck protocol.
+There are many different protocols for sumchecks, which roughly break down into two families.
+\begin{itemize}
+\item The first includes the univariate Arora sumcheck \cite{aurora}, incremental sumcheck \cite{}, and inner product protocols.
+These protocols all yield constant sized proofs, but require multiplying encodings of $\hat{f}$ and $\hat{eq}$ as univariate polynomials.
+This requires $O(N \log N)$ time.
+
+\item 
+The other family of protocols are inspired by the classical sumcheck protocol. The idea
+from which these evaluation claims typically arise.
+In these protocols, the vectors are incrementally folded in half in linear time, resulting in an overall linear running time because $n/2 + n/4 + ... = O(n).$
+Commitments to these folded vectors are sent to the verifier, resulting in a logarithmically sized proof.
+This family includes both Zeromorph and Gemini\cite{zeromorph,gemini}.
+
+However, these two families of protocols exist as extremes in a spectrum of sumcheck protocols, parameterized by a sequence of $(n_1, ..., n_k)$ such that $\prod_{i=1}^k n_i = n.$
+In these protocols, rather than folding by a factor of $2$ over $n$ rounds, or by a factor of $n$ over $1$ rounds, they are folded by the factors $n_i$ over $i$ rounds.
+Heuristically, we expect folding a vector of length $n$ by a factor of $n_1$ to take $O(n \log n_1)$ time.
+
+\end{itemize}
+
+
+Let $f$ be our function.
+Our starting point, which is common, is viewing a multilinear evaluation as a sum of  over the boolean cube
+
+We wish to use the idea that a multilinear evaluation 
+
+
+
+\section{Preliminaries}
+\subsection{Terminology and conventions}\label{sec:terminology}
+We work with integer parameter $n$ that we'll assume throughout the paper  is of the form
+$n=2^{2t}$ for integer $t>0$. We'll denote its square root by $b\defeq 2^t=\sqrt{n}$.
+We index vectors starting from zero. For example, for $g\in \F^b$ we have $g=(g_0,\ldots,g_{b-1})$.
+We associate vectors with univariate polynomials in the following natural way:
+Given $g\in \F^b$ we denote $g(X)\defeq \sum_{0\leq i < b} g_i X^i$.
+
+We make the convention that integer ranges in sums begin at zero if not specified otherwise. Thus, we write
+$g(X)=\sumi{b}g_i X^i$.
+
+We assume vectors of size $n$ are indexed by two indices ranging over $\set{0,\ldots,b-1}$. Thus, for $f\in \F^n$, we have $f=(f_{0,0},\ldots,f_{0,b-1},\ldots,f_{b-1,0},\ldots,f_{b-1,b-1})$.
+Accordingly, for $0\leq i <b$, we denote by $f_i$ the vector $(f_{i,0},\ldots, f_{i,b-1})$.
+
+In particular, for $f\in \F^n$ we have under these notations that
+\[f(X)\defeq \sumi{b}X^i f_i(X^b) = \sumi{b}\sumj{b}f_{i,j}X^{i+j\cdot b}\]
+ 
+
+\subsection{Multilinear polynomials}\label{sec:multilin-polys}
+Let $n=2^{2t}$.
+We define the well-known \eq multilinear polynomial in $4t$ variables. 
+\[\eq(x,y) \defeq \prodt ( x_i y_i + (1-x_i)(1-y_i))\]
+We have for $x,y \in \B{2t}$, $\eq(x,y)=1$ when $x=y$ and $\eq(x,y)=0$ otherwise.
+
+We use the convention that an integer $0\leq i < n$ can be used as an input to \eq by interpreting $i$ as its binary representation.
+Namely, for $0\leq i <n$, $u\in \F^t$, $\eq(i,u)\defeq \eq(i_1,\ldots, i_t,u)$ where $i=\sum_{j\in [t]} i_j 2^{j-1}$.
+
+For $a\in \F^n$, we define $\mle{f}$ to be the multilinear polynomial obtaining $f$'s values on the boolean cube.
+Namely,
+\[\mle{a}(X_1,\ldots,X_t) \defeq \sumi{n}\eq(i,X_1,\ldots,X_t)\cdot a_i.\]
+
+
+
+
+\subsection{The algebraic group model}\label{subsec:agm}
+We introduce some terminology from \cite{plonk} to capture analysis in the Algebraic Group Model of Fuchsbauer, Kiltz and Loss\cite{AGM}.
+
+In our protocols, by an \emph{algebraic adversary} \adv in an SRS-based protocol we mean a \poly-time algorithm which satisfies the following.
+\begin{itemize}
+ \item For $i\in \set{1,2}$, whenever \adv outputs an element $A\in \Gi$, it also outputs a vector $v$ over \F such that $A = <v,\srsi>$.
+\end{itemize}
+
+First we say our \srs \emph{has degree $Q$} if all elements of \srsi are of the form  \enci{f(x)} for $f\in \polysofdeg{Q+1}$ and uniform $x\in \F$. In the following discussion let us assume we are executing a protocol with a degree $Q$ SRS, and denote by $f_{i,j}$ the corresponding polynomial for the $j$'th element of \srsi.
+
+Denote by $a,b$ the vectors of $\F$-elements whose encodings in $\G1,\G2$ an algebraic adversary \adv outputs during a protocol execution; e.g., the $j$'th $\G1$ element output by \adv is \enc{a_j}.
+
+By a ``real pairing check'' we mean a check of the form
+\[(a\cdot T_1) \cdot (T_2\cdot b)=0\]
+for some matrices $T_1,T_2$ over $\F$.
+Note that such a check can indeed be done efficiently given the encoded elements and the pairing function $e:\G1\times \G2\to \Gt$.
+
+
+
+Given such a ``real pairing check'', and the adversary \adv and protocol execution during which the elements were output, define the corresponding ``ideal check'' as follows.
+Since \adv is algebraic when he outputs \enci{a_j} he also outputs a vector $v$ such that, from linearity, $a_j = \sum v_\ell f_{i,\ell}(x)=R_{i,j}(x)$ for $R_{i,j}(X) \defeq \sum v_\ell f_{i,\ell}(X)$.
+Denote, for $i\in \set{1,2}$ the vector of polynomials $R_i=(R_{i,j})_j$.
+The corresponding ideal check, checks as a polynomial identity whether
+\[(R_1 \cdot T_1)\cdot (T_2\cdot R_2) \equiv 0\]
+
+
+The following lemma is inspired by \cite{AGM}'s analysis of \cite{Groth16},
+and tells us that for soundness analysis against algebraic adversaries it suffices to look at ideal checks.
+Before stating the lemma we define the $Q$-DLOG assumption similarly to \cite{AGM}.
+\begin{dfn}\label{ref:qdlog}
+ Fix integer $Q$. The \emph{$Q$-DLOG assumption for $(\G1,\G2)$} states that given 
+ \[\enc{1},\enc{x},\ldots,\enc{x^Q},\enctwo{1},\enctwo{x},\ldots,\enctwo{x^Q}\]
+ for uniformly chosen $x\in \F$, the probability of an efficient \adv outputting $x$
+ is \negl.
+\end{dfn}
+
+
+
+\begin{lemma}\label{lem:AGManalysis}
+Assume the $Q$-DLOG for $(\G1,\G2)$.
+ Given an algebraic adversary \adv participating in a protocol with a degree $Q$ SRS,
+ the probability of any real pairing check passing is larger by at most an additive \negl factor than the probability the corresponding ideal check holds.
+\end{lemma}
+See \cite{plonk} for the proof.
+
+
+
+
+
+
+\subsection{Polynomial commitment schemes for multi-linear polynomials}
+
+\begin{dfn}\label{dfn:PCscheme}
+Let $n=2^t$. A multi-linear polynomial commitment scheme (ml-PCS) consists of 
+\begin{itemize}
+ \item $\gen(n)$ -  a randomized algorithm that outputs an SRS \srs0.
+ \item $\com(f,\srs)$ - that given a polynomial $f\in \F^n$ returns a commitment \cm to $f$.
+ \item A public coin protocol  $\open(\cm,n,u,v)$ between parties \prv and \ver. \prv is given $ f\in \F^n$. \prv and \ver are both given integer $n$, \cm - the purported commitment to $f$, $u\in \F^t$ and $v\in \F$ - the purported value $\mle{f}(u)$.
+\end{itemize}
+such that
+\begin{itemize}
+ \item \textbf{Completeness:} 
+ Suppose that , $\cm = \com(f,\srs)$.  Then if \open is run correctly with values
+ $n, \cm,u,v=\mle{f}(u)$, \ver outputs \acc with probability one.
+ \item \textbf{Knowledge soundness in the algebraic group model:} There exists an efficient \ext such that for any algebraic adversary \adv the probability of \adv winning the following game is \negl over the randomness of \adv and \gen.
+ \begin{enumerate}
+  \item Given \srs, \adv outputs $n,\cm$.
+  \item \ext, given access to the messages of \adv during the previous step, outputs $f\in \F^n$.
+  \item \adv outputs $ u\in \F^t$, $v \in \F$.
+  \item \adv takes the part of \prv in the protocol \open with inputs
+  $n,\cm,u,v$.
+  \item $\adv$ wins if 
+  \begin{itemize} 
+   \item \ver outputs \acc at the end of the protocol.
+   \item $\mle{f}(u)\neq v$.
+  \end{itemize}
+
+ \end{enumerate}
+
+\end{itemize}
+\end{dfn}
+
+\section{Components}
+In this section we go over known components (with some new optimizations), that will be used in our main protocol in the next section. 
+\subsection{Inner products in $O(b\log b)$ time.}
+For polynomials $g_1(X)=\sum_{i=0}^{d_1} a_i X^i,g_2=\sum_{i=0}^{d_2} b_i X^i$ in $\polys$.
+We define $<g_1,g_2>$ to be $\sum_{i=0}^d a_i b_i$ where $d\defeq \min \set{d_1,d_2}$. 
+We present the following protocol to verify $<g_1,g_2>$ as 
+A convenient way to get inner products in monomial similar to \cite{bootle,sonic}.
+
+
+\paragraph{Batching inner product checks}
+
+If we wish to show that $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
+\begin{enumerate}
+ \item 
+\ver  chooses random $\gamma \in \F$
+\item \prv sends $S\in \polys$ such that 
+\[ g_1(X)g_2(1/X)+ g_1(X) g_2(1/X) + \gamma(h_1(X)h_2(1/X) + h_1(1/X)h_2(X)) = 2(v_1+\gamma v_2) + X\cdot S(X)\]
+\end{enumerate}
+\subsection{Multi-liner evaluations as inner products of univariate polynomials.}
+For $u\in \B{t}$ define the polynomial $\eqpol{u} = \sumi{b}\eq(i,u)X^i$.
+Thus, we have for $g\in \polysofdeg{b}$, $\mle(g)=<g,\eqpol{u}>$.
+
+A verifier 
+Inner products.
+
+\subsection{Degree checks}
+This is based on Thakur \cite{thakur}.
+
+\subsection{Batching}
+Common practice to obtain an inner product of tw
+
+Degree checks 
+
+
+
+\section{Main Construction}
+\mercury is the tuple $(\gen,\com,\open)$ described next. \\    
+
+\noindent
+\underline{$\gen(n)$:}
+Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\enctwo{1},\enctwo{x}}\\
+
+\noindent
+\underline{$\com(n,f,\srs)$:}
+ Output $\sumi{b}\sumj{b}f_{i,j}\cdot \enc{x^{i\cdot b + j}}$.\\ \\ 
+
+\noindent
+\underline{$\open(n,\cm,u,v;f)$:} \\ \noindent
+\begin{enumerate}
+ \item \textsf{Committing to partial sums:} \ 
+\begin{enumerate}
+ \item \prv computes the polynomial to $h(X)\defeq \sumi{b}\eq(i,u_1) f_i(X)$. Note that the coefficient of $X^j$ in $h(X)$ is $\sumi{b}\eq(i,u_1) f_{i,j}$ - hence we think of it as a commitment to partial sums. 
+ \item \prv computes and sends $\h\defeq\enc{h(x)}$.
+ 
+ \end{enumerate}
+\item \textsf{ Committing to  ``folded'' polynomial $g$:} 
+\begin{enumerate}
+ \item \ver sends random $\alpha \in \F$.
+\item \prv computes polynomials $g(X) \in \polysofdeg{b}$ and $q(X)\in \polys$ such that
+\[f(X)=(X^b-\alpha)\cdot q(X) + g(X).\]
+\item \prv computes and sends $\q\defeq \enc{q(x)}$ and $\g\defeq \enc{g(x)}$.
+
+\end{enumerate}
+
+\item  \textsf{Sending proofs of correctness for $h$ and the degree of $g$:} 
+\begin{enumerate}
+\item \ver sends a random batching challenge $\gamma \in \F$.
+\item \prv computes and sends $\s=\enc{S(x)}$ where $S(X)\in \F[X]$ is  such that
+\[g(X)\eqpol{u_1}(1/X) + g(1/X)\eqpol{u_1}(X)+ \gamma\cdot ( h(X)\eqpol{u_2}(1/X) + h(1/X)\eqpol{u_2}(X) )\]
+\[  =h(\alpha) +\gamma \cdot v+X\cdot S(X)+(1/X)S(1/X).\]
+\item \prv computes and sends $\d\defeq \enc{D(x)}$ where 
+\[D(X)\defeq X^{b-1} g(1/X).\]
+\end{enumerate}
+\item  \textsf{KZG evaluations:} 
+\begin{enumerate}
+\item  \ver sends a random evaluation challenge $\zeta \in \F$.
+\item \prv sends the values $\fzeta\defeq f(\zeta),\qzeta \defeq q(\zeta), \gzeta \defeq g(\zeta), \ginv \defeq g(1/\zeta), \hzeta \defeq h(\zeta), \hinv \defeq h(1/\zeta), \halpha\defeq h(\alpha),\szeta \defeq s(\zeta),\sinv\defeq s(1/\zeta),\dzeta\defeq D(\zeta)$.\label{step:evals}
+\item \ver sends a random KZG batching challenge $\eta\in \F$.
+\item \prv computes and sends the KZG opening proof  \prfzeta for the values \fzeta and \qzeta. That is $\prfzeta \defeq \enc{H(x)}$ for
+\[H(X) \defeq \frac{f(X)-f(\zeta) +\eta(q(X)-q(\zeta))}{X-\zeta}.\]
+\item \prv computes and send a batched KZG opening proof \prfother for the rest of the values  sent in step \ref{step:evals}, as described in Section 4 of \cite{shplonk}.
+\item \ver checks the proof \prfzeta as in \cite{kzg}:\label{step:checkfirst}
+   \[e(\cm-\enc{\fzeta} + \eta(\q -\enc{\qzeta}),\enctwo{1})=e(\prfzeta,\enctwo{x}).\]
+   \item \ver checks the opening proof \prfother as described in \cite{shplonk}.
+   \item \ver checks the equation
+
+\[\gzeta \eqpol{u_1}(1/\zeta) + \ginv \eqpol{u_1}(\zeta) + \gamma(\hzeta \eqpol{u_2}(1/\zeta) + \hinv \eqpol{u_2}(\zeta))= \halpha +\gamma v + \zeta \szeta + (1/\zeta)\sinv.\]   
+\item \ver checks the equation $\dzeta=\zeta^{b-1} \ginv$.\label{step:checklast}
+\item If one of the checks in steps \ref{step:checkfirst}-\ref{step:checklast} fails \ver outputs \rej. Otherwise \ver outputs \acc.
+
+\end{enumerate}
+\end{enumerate}
+
+\paragraph{Runtime of \prv:}
+
+\paragraph{Proving knowledge soundness:}
+
+Let \adv be an efficient algebraic adversary participating in the Knowledge Soundness game from
+Definition \ref{dfn:lookupprot}.
+We show its probability of winning the game is \negl.
+Let $f\in \polysofdeg{\tabsize}$ be the polynomial sent by \adv in the third step of the game
+such that $\cm=\enc1{f(x)}$.
+As \adv is algebraic, when sending the commitments \m,\a,\b,\p,\qa,\qb,\gamproof,\zerproof during protocol execution it also sends polynomials $m(X),A(X),B_0(X),$ $P(X),Q_A(X),Q_B(X),h(X),A_0(X)\in \polysofdeg{\tabsize}$ such that the former are their corresponding commitments.
+Let $E$ be the event that \ver outputs \acc.
+Note that the event that \adv wins the knowledge soundness game is contained in $E$. 
+$E$ implies all pairing checks have passed.
+Let $A\subset E$ be the event that one of the corresponding ideal pairing checks as defined in Section \ref{subsec:agm} didn't pass.
+According to Lemma \ref{lem:AGManalysis}, $\prob(A)=\negl$.
 \bibliographystyle{alpha}
 \bibliography{references}
 \end{document}
