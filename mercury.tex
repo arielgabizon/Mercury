@@ -549,7 +549,7 @@
 \newcommand{\prob}{\ensuremath{\mathsf{prob}}\xspace}
 \newcommand{\ztafuncs}{\ensuremath{\mathcal{D}}\xspace}
 \newcommand{\prodt}{\ensuremath{\prod_{i=1}^t}\xspace}
-\newcommand{\B}[1]{\ensuremath{\mathcal{B}_{#1}}\xspace}
+\newcommand{\B}[1]{\ensuremath{B_{#1}}\xspace}
 \newcommand{\shlomomath}[1]{\ensuremath{\text{\usefont{U}{BOONDOX-cal}{m}{n}#1}}\xspace}
 \newcommand{\acc}{\ensuremath{\shlomomath{accept}}\xspace}
 \newcommand{\mlpcs}{ml-PCS\xspace}
@@ -571,7 +571,7 @@
 \begin{document}
     \maketitle
 \begin{abstract}
-We construct a polynomial commitment scheme for multilinear polynomials  of size $n$ where
+We construct a pairing-based polynomial commitment scheme for multilinear polynomials  of size $n$ where
 constructing an opening proof requires  $O(n)$ field operations, and $2n+O(\sqrt n)$ scalar multiplications. Moreover,
 the opening proof consists of a constant number of field elements.
 This is a significant improvement over previous works which would require either
@@ -589,17 +589,17 @@ As opposed to previous methods, the proof size and prover time remain constant \
 \subsection{Our results}
 
 \begin{table}[!htbp]
-	\caption{ Comparison of pairing-based \mlpcs. }
+	\caption{ Comparison of pairing-based \mlpcs. \G denotes a scalar multiplication. All verifiers below additionally require two pairings. }
 	\centering
 % \begin{adjustbox}{width=1\textwidth}
 	\begin{tabular}{l|l|l|l}
 	\thead{Scheme} & \thead{Proof size} & \thead{Prover Work} & \thead{Verifier Work}  \\ \hline
-		univariate-based e.g. \cite{logupgkr}
+		univariate-based e.g.\cite{logupgkr}
 		        & $O(1)$ \F &        $O(n\log n)$ \F,$O(n)$ \G  & $O(\log n)$ \F,   $O(1)$ \G   \\ \hline
 		\gemini\cite{gemini} & $O(\log n)$ \F &  $O(n)$ \F, $3n$ \G     &    $O(\log n)$ \F, $O(\log n)$ \G \\ \hline
 		
 		\zeromorph\cite{zeromorph} & $O(\log n)$ \F             & $O(n)$ \F, $2.5n$ \G   &  $O(\log n)$ \F, $O(\log n)$ \G         \\ \hline
-		\mercury\cite{mercury}       & $O(1)$ \F   & $O(n)$ \F, $2n+ O(\sqrt n)$ \G     & $O(\log n)$ \F, $O(1)$ \G          \\ \hline
+		\mercury (this work)       & $O(1)$ \F   & $O(n)$ \F, $2n+ O(\sqrt n)$ \G     & $O(\log n)$ \F, $O(1)$ \G          \\ \hline
 	\end{tabular}
 % \end{adjustbox}
 \label{table:prover-work}
@@ -614,7 +614,7 @@ Our technique is best thought of as an improvement of the \mlpcs from \gemini \c
 Let's start by recalling how \gemini works.
 \gemini commits to a multilinear function as a \emph{univariate} KZG commitment\cite{kzg}. Specifically,
 fix a vector $f\in \F^n$ describing the function's values on the boolean cube, and a structured reference string of elements \sett{\enc{x^i}}{i<n}. \gemini
-outputs $\cm=\sumi{n}f_i \enc{x^i}$ as a commitment to the multilinear function $M(X_0,\ldots,X_{s-1})= \sumi{n}\eq(i,u) f_i$ where $u\in \F^{\log n}$.
+outputs $\cm=\sumi{n}f_i \enc{x^i}$ as a commitment to the multilinear function $M(X_0,\ldots,X_{s-1})= \sumi{n}\eq(i,X_0,\ldots,X_{s-1}) f_i$ where $s=\log n$.
 
 
 Now suppose prover \prv wants to convince verifier \ver  that $M(u)=v$, for some $u=(u_0,\ldots,u_{s-1})$. In \gemini, \prv sends commitments $\cm_1,\ldots,\cm_s$ to the $s$ incremental restrictions leading  to evaluation at $u$.
@@ -626,8 +626,8 @@ Write $f(X)=f_0(X^2)+X f_1(X^2)$, for $f_0(X),f_1(X)$ of degree $<n/2$. Let $f_{
 \[f_{u_1}(X)=(1-u_1)f_0(X)+ u_1 f_1(X).\]
 Additionally, we can evaluate $f_0$ and $f_1$ via $f$  using the equations
 \[f_0(X^2)=\frac{f(X)+f(-X)}{2}, f_1(X^2)=\frac{f(X)-f(-X)}{2X}\]
-Thus, we can perform consistency checks between each pair $\cm_{i-1},\cm_i$ showing $\cm_i$ is indeed the commitment to the next correct restriction.
-Of course, we get $O(s)=O(\log n)$ proof length due to sending this sequence of restriction commitments.
+Thus, we can perform consistency checks between each pair $\cm_{i-1},\cm_i$, via univariate KZG openings at a random challenge, inductively showing $\cm_i$ is indeed the commitment to the next desired restriction.
+Of course, we get $O(s)=O(\log n)$ proof length due to this sequence of restriction commitments.
 
 Here is a first idea on how to reduce proof length.
 Protocols based on univariate polynomials allow us to do multilinear evaluation in $O(n\log n)$ prover time with constant proof size (e.g. Section 5 of \cite{logupgkr}) .
@@ -661,7 +661,7 @@ And we can afford to evaluate $\mle{g}(u_1)$ using the aforementioned univariate
 
 \paragraph{Comparison to sumcheck}
 It is instructive to see what  happens if we try to get a similar result via a modification of the sumcheck protocol \cite{lfkn}.
-Note first that indeed a multilinear evaluation can be seen as a sum over the the committed function multiplied by the \eq function:
+Note first that a multilinear evaluation can indeed   written as a sum over the function's values on the \B{n} multiplied by the \eq function:
 $$ \hat{f}(u) = \sum_{b \in B_n} \eq(b, u) \hat{f}(b). $$
 
 
@@ -847,8 +847,13 @@ $<g_1,g_2>=v$ is equivalent to the existence of $S(X)\in \polys$ such that
  Suppose $g_1(X),g_2(X)\in \polysofdeg{b}$. Let $S(X)$ be as defined above.
  Then $S$ can be computed in $O(b \log b)$ \F-operations.
 \end{claim}
+\begin{proof}
+When $g_1(X),g_2(X)\in \polysofdeg{b}$ we multiply the equation above by $X^{b-1}$ to get
+\[ X^{b-1}(g_1(X) g_2(1/X)+g_1(1/X) g_2(1/X))=X^{b-1}(2v + X\cdot S(X) + (1/X)S(1/X)).\]
+We can use an $O(b \log b )$ time FFT to evaluate the LHS on $2b$ points. We then do an inverse
+FFT to get the coefficients $c_0,\ldots,c_{2b-2}$ of the LHS. Now, we can output $S=(c_b,\ldots, c_{2b-2})$.
+\end{proof}
 
-Note that when $g_1,g_2 \in \polysofdeg{b}$ the coefficients of $S(X)$
 \paragraph{Batching inner product checks}
 
 Suppose we now have two  inner product claims  $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
