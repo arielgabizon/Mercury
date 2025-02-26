@@ -549,7 +549,7 @@
 \newcommand{\prob}{\ensuremath{\mathsf{prob}}\xspace}
 \newcommand{\ztafuncs}{\ensuremath{\mathcal{D}}\xspace}
 \newcommand{\prodt}{\ensuremath{\prod_{i=1}^t}\xspace}
-\newcommand{\B}[1]{\ensuremath{\set{0,1}^{#1}}\xspace}
+\newcommand{\B}[1]{\ensuremath{\mathcal{B}_{#1}}\xspace}
 \newcommand{\shlomomath}[1]{\ensuremath{\text{\usefont{U}{BOONDOX-cal}{m}{n}#1}}\xspace}
 \newcommand{\acc}{\ensuremath{\shlomomath{accept}}\xspace}
 \newcommand{\mlpcs}{ml-PCS\xspace}
@@ -587,8 +587,6 @@ As opposed to previous methods, the proof size and prover time remain constant \
 
 
 \subsection{Our results}
-bl
-blabla
 
 \begin{table}[!htbp]
 	\caption{ Comparison of pairing-based \mlpcs. }
@@ -598,10 +596,10 @@ blabla
 	\thead{Scheme} & \thead{Proof size} & \thead{Prover Work} & \thead{Verifier Work}  \\ \hline
 		univariate-based e.g. \cite{logupgkr}
 		        & $O(1)$ \F &        $O(n\log n)$ \F,$O(n)$ \G  & $O(\log n)$ \F,   $O(1)$ \G   \\ \hline
-		\gemini\cite{gemini} & $O(\log n)$ \F &  $O(n)$ \F, $3n$ \G     &    $O(\witsize^2)$ \F,\G1 \\ \hline
+		\gemini\cite{gemini} & $O(\log n)$ \F &  $O(n)$ \F, $3n$ \G     &    $O(\log n)$ \F, $O(\log n)$ \G \\ \hline
 		
-		\zeromorph\cite{zeromorph} & $O(\log n)$ \F             & $O(n)$ \F, $2.5n$ \G   & $6\witsize$ \G1, \witsize \G2, $O(\witsize\log^2\witsize)$ \F         \\ \hline
-		\mercury\cite{mercury}       & $O(1)$ \F   & $O(n)$ \F, $2n+ O(\sqrt n)$ \G     & $13n$ \G1 $n$ \G2, $O(n\log^2n)$ \F          \\ \hline
+		\zeromorph\cite{zeromorph} & $O(\log n)$ \F             & $O(n)$ \F, $2.5n$ \G   &  $O(\log n)$ \F, $O(\log n)$ \G         \\ \hline
+		\mercury\cite{mercury}       & $O(1)$ \F   & $O(n)$ \F, $2n+ O(\sqrt n)$ \G     & $O(\log n)$ \F, $O(1)$ \G          \\ \hline
 	\end{tabular}
 % \end{adjustbox}
 \label{table:prover-work}
@@ -619,45 +617,48 @@ fix a vector $f\in \F^n$ describing the function's values on the boolean cube, a
 outputs $\cm=\sumi{n}f_i \enc{x^i}$ as a commitment to the multilinear function $M(X_0,\ldots,X_{s-1})= \sumi{n}\eq(i,u) f_i$ where $u\in \F^{\log n}$.
 
 
-Now suppose prover \prv wants to convince verifier \ver  that $M(u)=v$, for some $u=(u_0,\ldots,u_{s-1})$. \prv will send commitments $\cm_1,\ldots,\cm_s$ to the $s$ incremental restrictions leading  to evaluation at $u$.
+Now suppose prover \prv wants to convince verifier \ver  that $M(u)=v$, for some $u=(u_0,\ldots,u_{s-1})$. In \gemini, \prv sends commitments $\cm_1,\ldots,\cm_s$ to the $s$ incremental restrictions leading  to evaluation at $u$.
 Namely, to $M_1=M(u_0,X_1,\ldots,X_{s-1})$, $M_2=M(u_0,u_1,X_2,\ldots,X_{s-1}),\ldots,M_s=M(u_0,\ldots,u_{s-1})$.
-Assuming \prv sent commitments to the correct functions, all that is needed is to check that $\cm_s$ is the commitment to the constant $v$. Of course, the technically interesting part is to prove the commitments \emph{are} to the correct functions!
+Assuming \prv sent commitments to the correct functions, all that is needed is to check that $\cm_s$ is the commitment to the constant $v$. Of course, the interesting part is proving the commitments \emph{are} to the correct functions!
+
 For this purpose, \gemini exploits a connection between $M$ and its corresponding univariate $f(X)$:
 Write $f(X)=f_0(X^2)+X f_1(X^2)$, for $f_0(X),f_1(X)$ of degree $<n/2$. Let $f_{u_1}(X)$ be the univariate corresponding to $M_1$ defined above. Then, we have
 \[f_{u_1}(X)=(1-u_1)f_0(X)+ u_1 f_1(X).\]
 Additionally, we can evaluate $f_0$ and $f_1$ via $f$  using the equations
-\[f_0(X^2)=(f(X)+f(-X))/2, f_1(X^2)=(f(X)-f(-X))/2x\]
+\[f_0(X^2)=\frac{f(X)+f(-X)}{2}, f_1(X^2)=\frac{f(X)-f(-X)}{2X}\]
 Thus, we can perform consistency checks between each pair $\cm_{i-1},\cm_i$ showing $\cm_i$ is indeed the commitment to the next correct restriction.
-Of course, we get $O(s)=O(\log n)$ proof length due to sending this incremental sequence of restriction commitments.
+Of course, we get $O(s)=O(\log n)$ proof length due to sending this sequence of restriction commitments.
 
-Here is a first idea on how to reduce proof length (without increasing prover time).
+Here is a first idea on how to reduce proof length.
 Protocols based on univariate polynomials allow us to do multilinear evaluation in $O(n\log n)$ prover time with constant proof size (e.g. Section 5 of \cite{logupgkr}) .
 Choose a parameter $t$ and set $b=2^t$.
 We can run \emph{only the first $t$ rounds} of \gemini, reaching a restricted multilinear on $n-t$ variables.
-If $n'=n/(2^t)\leq n/\log n$, we can now apply a univariate protocol running in $O(n' \log n')$ time, running 
+If $n'=n/b\leq n/\log n$, we can afford to run a univariate protocol with $O(n' \log n')=O(n)$ prover time to evaluate $M_t(u_t,\ldots,u_s)$.
 This still doesn't take us to overall constant proof size - as we  need to use a super-constant $t$ to reach such $n'$. (For us $t=\log n/2$ will be optimal, although $t\geq \log \log n$ suffices here.)
 
 
 % Here comes the second idea.
-This raises the question - can we ``skip'' the intermediate \gemini rounds and send \emph{only} the commitment $\cm_t$, and prove it is consistent with the original \cm?
+This raises the question - can we ``skip'' the intermediate \gemini rounds and send \emph{only} the commitment $\cm_t$, and directly prove it is consistent with the original \cm?
 Extrapolating the \gemini strategy in the natural way, we get the answer - yes, but not with constant proof size:
 We can decompose $f$ into $b$ polynomials of degree $<n/b$: $f(X)=\sum_{0\leq i <b} X^i f_i(X^b)$.
-As in the $b=2$ case, one can show the univariate $f'(X)$ corresponding to $M_t$ will be a linear combination
+As in the $b=2$ case, one can show the univariate $f'(X)$ corresponding to $M_t$ is a linear combination
 of the \set{f_i(X)}. Moreover, evaluating the $f_i$ using $f$ (for the consistency check) can be done.
 However, it requires $b$ evaluations of $f$. Specifically,
-$f_i$ at $(r^b)$ can be evaluated using $f$ at $\set{r,r\omega,\ldots,r\omega^{t-1}}$ for a primitive $t$'th root of unity $\omega$.
+$f_i(r^b)$ is a linear combination of  $\set{f(r),f(r\omega),\ldots,f(r\omega^{t-1})}$ where $\omega$ is a primitive $t$'th root of unity.
 
 
 Our central innovation is a different way to prove $\cm_t$ is correct \emph{with} constant proof size.
 Take any $\alpha \in \F$, and let $g(X)=f(X) \mod X^b-\alpha$.
 Then,
 \[g(X)= \sum_{0\leq i < b} X^i f_i(\alpha)\]
-The restricted polynomial we are interested in
-\[f'(X) = \sum_{0\leq i < b} \eq(i,u_1)f_i(X)\]
+The (univariate corresponding to the) restricted polynomial we are interested in is 
+\[h(X) = \sum_{0\leq i < b} \eq(i,u_1)f_i(X).\]
 
-Proving correctness of $g$ can be done via a quotient. What remains is to connect $g$ and $f'$.
-We can use KZG \cite{kzg} to get $f'(\alpha)=\sum_{0\leq i < b} \eq(i,u_1)f_i(X)$.
-Now we can get the same evaluation  via evaluating $g$ as a mulitlinear!
+Proving correctness of $g$ can be done via a quotient. Now we want to ``connect'' $g$ and $h$ to prove correctness of $h$.
+We can use standard univariate KZG to evaluate $h(\alpha)=\sum_{0\leq i < b} \eq(i,u_1)f_i(\alpha)$.
+Now note that $h(\alpha)$ should equal, $\mle{g}(u_1)$ - the evaluation of $g$ \emph{as a multilinear} at $u_1$!
+And we can afford to evaluate $\mle{g}(u_1)$ using the aforementioned univariate protocols as it is of size $b$ rather than $n$.
+
 \paragraph{Comparison to sumcheck}
 It is instructive to see what  happens if we try to get a similar result via a modification of the sumcheck protocol \cite{lfkn}.
 Note first that indeed a multilinear evaluation can be seen as a sum over the the committed function multiplied by the \eq function:
@@ -828,13 +829,30 @@ In this section we go over known components (with some new optimizations), that 
 \subsection{Inner products in $O(b\log b)$ time.}
 For polynomials $g_1(X)=\sum_{i=0}^{d_1} a_i X^i,g_2=\sum_{i=0}^{d_2} b_i X^i$ in $\polys$.
 We define $<g_1,g_2>$ to be $\sum_{i=0}^d a_i b_i$ where $d\defeq \min \set{d_1,d_2}$. 
-We present the following protocol to verify $<g_1,g_2>$ as 
-A convenient way to get inner products in monomial similar to \cite{bootle,sonic}.
+We present a convenient way to verify inner products $<g_1,g_2>$ similar to \cite{bootle,sonic}.
+The basic observation is that for any $g_1(X),g_2(X)\in \polys$ is the constant coefficient of the rational function
+$R(X)\defeq g_1(X) g_2(1/X)$.
+Thus, $<g_1,g_2>=v$ is equivalent to the existence of polynomials $S_1,S_2$ such that
+\[g_1(X) g_2(1/X)=1/X\cdot S_1(1/X) + v + X\cdot S_2(X)\] 
+We can thus sends commitments to $S_1,S_2$ as proof of the correctness of $v$.
+As an optimization, we observe that we can ``symmetrize'' $R$ an look instead at the rational function
 
+\[R'(X)\defeq g_1(X) g_2(1/X)+g_1(1/X) g_2(1/X).\]
+The advantage of $R'$ is that the negative and positive coefficients are equal. Thus,
+$<g_1,g_2>=v$ is equivalent to the existence of $S(X)\in \polys$ such that
 
+\[ g_1(X) g_2(1/X)+g_1(1/X) g_2(1/X)=2v + X\cdot S(X) + (1/X)S(1/X).\]
+
+\begin{claim}\label{clm:}
+ Suppose $g_1(X),g_2(X)\in \polysofdeg{b}$. Let $S(X)$ be as defined above.
+ Then $S$ can be computed in $O(b \log b)$ \F-operations.
+\end{claim}
+
+Note that when $g_1,g_2 \in \polysofdeg{b}$ the coefficients of $S(X)$
 \paragraph{Batching inner product checks}
 
-If we wish to show that $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
+Suppose we now have two  inner product claims  $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
+If we choose random $\gamma \in \F$ with high probability
 \begin{enumerate}
  \item 
 \ver  chooses random $\gamma \in \F$
@@ -843,7 +861,7 @@ If we wish to show that $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$.
 \end{enumerate}
 \subsection{Multi-liner evaluations as inner products of univariate polynomials.}
 For $u\in \B{t}$ define the polynomial $\eqpol{u} = \sumi{b}\eq(i,u)X^i$.
-Thus, we have for $g\in \polysofdeg{b}$, $\mle(g)=<g,\eqpol{u}>$.
+Thus, we have for $g(X)\in \polysofdeg{b}$, $\mle{g}=<g,\eqpol{u}>$.
 
 A verifier 
 Inner products.
@@ -951,7 +969,7 @@ Let \adv be an efficient algebraic adversary participating in the Knowledge Soun
 Definition \ref{dfn:mlpcs}.
 We show its probability of winning the game is \negl.
 Let $f\in \F^n$ be the vector sent by \adv in the third step of the game
-such that $\cm=\enc1{f(x)}$.
+such that $\cm=\enc{f(x)}$.
 As \adv is algebraic, when sending the commitments \h,\q,\g,\s,\d,\prfzeta,\prfother during protocol execution it also sends polynomials $h(X),q(X),g(X),$ $S(X),D(X),H(X),Q(X)\in \polysofdeg{n}$ such that the former are their corresponding commitments.
 Let $E$ be the event that \ver outputs \acc.
 Note that the event that \adv wins the knowledge soundness game is contained in $E$. 
