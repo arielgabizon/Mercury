@@ -613,22 +613,25 @@ blabla
 \end{remark}
 
 Our technique is best thought of as an improvement of the \mlpcs from \gemini \cite{gemini}.
-Let us start by recalling how \gemini works.
-\gemini commits to the multilinear function as a \emph{univariate} KZG commitment\cite{kzg}. Specifically,
-suppose given a vector $f\in \F^n$, and a structured reference string of elements \sett{\enc{x^i}}{i<n}. \gemini
-outputs $\sumi{n}f_i \enc{x^i}$ as a commitment to the multilinear function $M(X_0,\ldots,X_{s-1})= \sumi{n}\eq(i,u) f_i$ where $u\in \F^{\log n}$.
+Let's start by recalling how \gemini works.
+\gemini commits to a multilinear function as a \emph{univariate} KZG commitment\cite{kzg}. Specifically,
+fix a vector $f\in \F^n$ describing the function's values on the boolean cube, and a structured reference string of elements \sett{\enc{x^i}}{i<n}. \gemini
+outputs $\cm=\sumi{n}f_i \enc{x^i}$ as a commitment to the multilinear function $M(X_0,\ldots,X_{s-1})= \sumi{n}\eq(i,u) f_i$ where $u\in \F^{\log n}$.
+
+
 Now suppose prover \prv wants to convince verifier \ver  that $M(u)=v$, for some $u=(u_0,\ldots,u_{s-1})$. \prv will send commitments $\cm_1,\ldots,\cm_s$ to the $s$ incremental restrictions leading  to evaluation at $u$.
-Namely, to $M_1(u_0,X_1,\ldots,X_{s-1})$, $M_2(u_0,u_1,X_2,\ldots,X_{s-1}),\ldots,M_s(u_0,\ldots,u_{s-1})$.
+Namely, to $M_1=M(u_0,X_1,\ldots,X_{s-1})$, $M_2=M(u_0,u_1,X_2,\ldots,X_{s-1}),\ldots,M_s=M(u_0,\ldots,u_{s-1})$.
 Assuming \prv sent commitments to the correct functions, all that is needed is to check that $\cm_s$ is the commitment to the constant $v$. Of course, the technically interesting part is to prove the commitments \emph{are} to the correct functions!
 For this purpose, \gemini exploits a connection between $M$ and its corresponding univariate $f(X)$:
 Write $f(X)=f_0(X^2)+X f_1(X^2)$, for $f_0(X),f_1(X)$ of degree $<n/2$. Let $f_{u_1}(X)$ be the univariate corresponding to $M_1$ defined above. Then, we have
 \[f_{u_1}(X)=(1-u_1)f_0(X)+ u_1 f_1(X).\]
 Additionally, we can evaluate $f_0$ and $f_1$ via $f$  using the equations
 \[f_0(X^2)=(f(X)+f(-X))/2, f_1(X^2)=(f(X)-f(-X))/2x\]
-Thus, we can perform consistency checks between each pair $\cm_{i-1},\cm_i$ showing it is the correct restriction to the next variable.
-Of course, we get $O(s)=O(\log n)$ proof length due to sending this incremental sequence of restrictions.
+Thus, we can perform consistency checks between each pair $\cm_{i-1},\cm_i$ showing $\cm_i$ is indeed the commitment to the next correct restriction.
+Of course, we get $O(s)=O(\log n)$ proof length due to sending this incremental sequence of restriction commitments.
+
 Here is a first idea on how to reduce proof length (without increasing prover time).
-Protocols based on univariate polynomials allow us to do multilinear evaluation in $O(n\log n)$ prover time (see e.g. Section 5 of \cite{logupgkr}), with constant proof size.
+Protocols based on univariate polynomials allow us to do multilinear evaluation in $O(n\log n)$ prover time with constant proof size (e.g. Section 5 of \cite{logupgkr}) .
 Choose a parameter $t$ and set $b=2^t$.
 We can run \emph{only the first $t$ rounds} of \gemini, reaching a restricted multilinear on $n-t$ variables.
 If $n'=n/(2^t)\leq n/\log n$, we can now apply a univariate protocol running in $O(n' \log n')$ time, running 
@@ -790,7 +793,7 @@ See \cite{plonk} for the proof.
 
 \subsection{Polynomial commitment schemes for multilinear polynomials}
 
-\begin{dfn}\label{dfn:PCscheme}
+\begin{dfn}\label{dfn:mlpcs}
 Let $n=2^t$. A multi-linear polynomial commitment scheme (ml-PCS) consists of 
 \begin{itemize}
  \item $\gen(n)$ -  a randomized algorithm that outputs an SRS \srs0.
@@ -945,11 +948,11 @@ Computing $\q$ and $\prfzeta$ requires two MSMs of size $n$. All other steps are
 \paragraph{Proving knowledge soundness:}
 
 Let \adv be an efficient algebraic adversary participating in the Knowledge Soundness game from
-Definition \ref{dfn:lookupprot}.
+Definition \ref{dfn:mlpcs}.
 We show its probability of winning the game is \negl.
-Let $f\in \polysofdeg{\tabsize}$ be the polynomial sent by \adv in the third step of the game
+Let $f\in \F^n$ be the vector sent by \adv in the third step of the game
 such that $\cm=\enc1{f(x)}$.
-As \adv is algebraic, when sending the commitments \m,\a,\b,\p,\qa,\qb,\gamproof,\zerproof during protocol execution it also sends polynomials $m(X),A(X),B_0(X),$ $P(X),Q_A(X),Q_B(X),h(X),A_0(X)\in \polysofdeg{\tabsize}$ such that the former are their corresponding commitments.
+As \adv is algebraic, when sending the commitments \h,\q,\g,\s,\d,\prfzeta,\prfother during protocol execution it also sends polynomials $h(X),q(X),g(X),$ $S(X),D(X),H(X),Q(X)\in \polysofdeg{n}$ such that the former are their corresponding commitments.
 Let $E$ be the event that \ver outputs \acc.
 Note that the event that \adv wins the knowledge soundness game is contained in $E$. 
 $E$ implies all pairing checks have passed.
