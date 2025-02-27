@@ -548,7 +548,7 @@
 \newcommand{\funcs}{\ensuremath{\mathsf{F}}\xspace}
 \newcommand{\prob}{\ensuremath{\mathsf{prob}}\xspace}
 \newcommand{\ztafuncs}{\ensuremath{\mathcal{D}}\xspace}
-\newcommand{\prodt}{\ensuremath{\prod_{i=1}^t}\xspace}
+\newcommand{\prodt}{\ensuremath{\prod_{i=0}^{t-1}}\xspace}
 \newcommand{\B}[1]{\ensuremath{B_{#1}}\xspace}
 \newcommand{\shlomomath}[1]{\ensuremath{\text{\usefont{U}{BOONDOX-cal}{m}{n}#1}}\xspace}
 \newcommand{\acc}{\ensuremath{\shlomomath{accept}}\xspace}
@@ -644,25 +644,32 @@ We can decompose $f$ into $b$ polynomials of degree $<n/b$: $f(X)=\sum_{0\leq i 
 As in the $b=2$ case, one can show the univariate $f'(X)$ corresponding to $M_t$ is a linear combination
 of the \set{f_i(X)}. Moreover, evaluating the $f_i$ using $f$ (for the consistency check) can be done.
 However, it requires $b$ evaluations of $f$. Specifically,
-$f_i(r^b)$ is a linear combination of  $\set{f(r),f(r\omega),\ldots,f(r\omega^{t-1})}$ where $\omega$ is a primitive $t$'th root of unity.
+$f_i(r^b)$ is a linear combination of  $\set{f(r),f(r\omega),\ldots,f(r\omega^{b-1})}$ where $\omega$ is a primitive $b$'th root of unity.
 
 
 Our central innovation is a different way to prove $\cm_t$ is correct \emph{with} constant proof size.
-Take any $\alpha \in \F$, and let $g(X)=f(X) \mod X^b-\alpha$.
-Then,
-\[g(X)= \sum_{0\leq i < b} X^i f_i(\alpha)\]
-The (univariate corresponding to the) restricted polynomial we are interested in is 
+The (univariate corresponding to the) correct restricted polynomial is 
 \[h(X) = \sum_{0\leq i < b} \eq(i,u_1)f_i(X).\]
-
-Proving correctness of $g$ can be done via a quotient. Now we want to ``connect'' $g$ and $h$ to prove correctness of $h$.
-We can use standard univariate KZG to evaluate $h(\alpha)=\sum_{0\leq i < b} \eq(i,u_1)f_i(\alpha)$.
-Now note that $h(\alpha)$ should equal, $\mle{g}(u_1)$ - the evaluation of $g$ \emph{as a multilinear} at $u_1$!
-And we can afford to evaluate $\mle{g}(u_1)$ using the aforementioned univariate protocols as it is of size $b$ rather than $n$.
-
+% We'll show $\cm_t$ opens to $h(\alpha)$ for random $\alpha$ chosen by \ver as follows.
+Let $g(X)\defeq f(X) \mod X^b-\alpha$.
+Calculation shows
+\[g(X)= \sum_{0\leq i < b} X^i f_i(\alpha).\]
+% \prv will send $\g\defeq \cm(g)$ and prove its correctness via a quotient.
+The multilinear $\mle{g}$ corresponding to $g(X)$ is 
+\[\mle{g}(X_0,\ldots X_{t-1}) = \sum_{0\leq i < b} \eq(i,X_0,\ldots,X_{u-1})f_i(\alpha)
+\]
+In particular, we have 
+\[\mle{g}(u_1) = \sum_{0\leq i < b} \eq(i,u_1)f_i(\alpha)=h(\alpha).\]
+In words, the evaluation of $g$ at $u_1$ as a \emph{multilinear} corresponds to 
+the evaluation of $h$ at $\alpha$ as a univariate!
+We can use standard univariate KZG to open $\cm_t$ at $\alpha)$a
+And, crucially, we can afford to evaluate $\mle{g}(u_1)$ using the aforementioned univariate protocols as it is of size $b$ rather than $n$.
+In summary, we can show a committed polynomial corresponds to the correct restriction. And now, again, we can afford to open $h$ as a multilinear at $u_2$ using univariate protocols
+as it has size $n/b$ rather than $n$.
 \paragraph{Comparison to sumcheck}
 It is instructive to see what  happens if we try to get a similar result via a modification of the sumcheck protocol \cite{lfkn}.
 Note first that a multilinear evaluation can indeed   written as a sum over the function's values on the \B{n} multiplied by the \eq function:
-$$ \hat{f}(u) = \sum_{b \in B_n} \eq(b, u) \hat{f}(b). $$
+$$ \hat{f}(u) = \sum_{b \in B_s} \eq(b, u) \hat{f}(b). $$
 
 
 The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. In the above spirit, we could look at a modified sumcheck protocol, where the first variable ranges over a domain of super-constant size $b$. The first round univariate $P_1$ would thus have degree $2b$ in our case. We can send a  commitment to it rather than its coefficients as usually done to maintain constant proof size.
@@ -725,7 +732,7 @@ Accordingly, for $0\leq i <b$, we denote by $f_i$ the vector $(f_{i,0},\ldots, f
 In particular, for $f\in \F^n$ we have under these notations that
 \[f(X)\defeq \sumi{b}X^i f_i(X^b) = \sumi{b}\sumj{b}f_{i,j}X^{i+j\cdot b}\]
  
-
+We denote by \B{t} the binary cube $\set{0,1}^t$ of dimension $t$.
 \subsection{Multilinear polynomials}\label{sec:multilin-polys}
 Let $n=2^{2t}$.
 We define the well-known \eq multilinear polynomial in $4t$ variables. 
@@ -737,7 +744,7 @@ Namely, for $0\leq i <n$, $u\in \F^t$, $\eq(i,u)\defeq \eq(i_1,\ldots, i_t,u)$ w
 
 For $a\in \F^n$, we define $\mle{f}$ to be the multilinear polynomial obtaining $f$'s values on the boolean cube.
 Namely,
-\[\mle{a}(X_1,\ldots,X_t) \defeq \sumi{n}\eq(i,X_1,\ldots,X_t)\cdot a_i.\]
+\[\mle{a}(X_0,\ldots,X_{t-1}) \defeq \sumi{n}\eq(i,X_1,\ldots,X_t)\cdot a_i.\]
 
 
 
@@ -858,18 +865,42 @@ FFT to get the coefficients $c_0,\ldots,c_{2b-2}$ of the LHS. Now, we can output
 
 Suppose we now have two  inner product claims  $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
 If we choose random $\gamma \in \F$ with high probability
-\begin{enumerate}
- \item 
-\ver  chooses random $\gamma \in \F$
-\item \prv sends $S\in \polys$ such that 
-\[ g_1(X)g_2(1/X)+ g_1(X) g_2(1/X) + \gamma(h_1(X)h_2(1/X) + h_1(1/X)h_2(X)) = 2(v_1+\gamma v_2) + X\cdot S(X)\]
-\end{enumerate}
-\subsection{Multi-liner evaluations as inner products of univariate polynomials.}
-For $u\in \B{t}$ define the polynomial $\eqpol{u} = \sumi{b}\eq(i,u)X^i$.
-Thus, we have for $g(X)\in \polysofdeg{b}$, $\mle{g}=<g,\eqpol{u}>$.
+% \begin{enumerate}
+%  \item 
+% \ver  chooses random $\gamma \in \F$
+% \item \prv sends $S\in \polys$ such that 
+\begin{claim}label{claim:batchipa}
+ Fix polynomials $g_1,g_2,h_1,h_2\in \polys$ and $v_1,v_2\in \F$.
+ Suppose $<g_1,g_2>\neq v_1$ or $<h_1,h_2>\neq v_2$. Then, e.w.p $1/|\F|$ over $\gamma\in \F$
+ there does not exist $S(X)\in\polys$ such that
+\[ g_1(X)g_2(1/X)+ g_1(X) g_2(1/X) + \gamma(h_1(X)h_2(1/X) + h_1(1/X)h_2(X)) = 2(v_1+\gamma v_2) + X\cdot S(X)+(1/X)S(1/X)\]
+ 
+\end{claim}
+\begin{proof}
+Denote $(v'_1,v'_2)=(<g_1,g_2>,<h_1,h_2>))$.
+ The constant coefficient of the LHS is $v'_1+\gamma v'_2$
+To satisfy the equation in the claim for some $S$, we need
+ \[v'_1+\gamma v'_2=v_1+\gamma v_2,\]
+which can hold for at most one $\gamma$ when $(v_1,v_2)\neq (v'_1,v'_2)$.
+\end{proof}
 
-A verifier 
-Inner products.
+\subsection{Multilinear evaluations as inner products of univariate polynomials.}
+For $u\in \B{t}$ define the polynomial $\eqpol{u} (X)\defeq  \sumi{b}\eq(i,u)X^i$.
+Thus, we have for $g(X)\in \polysofdeg{b}$, $\mle{g}(u)=<g,\eqpol{u}>$.
+We have the product formula
+\[\eqpol{u}(X)=\prodt(u_i X^{2^i}+(1-u_i)(1-X^{2^i}))
+\]
+implying $\eqpol{u}(X)$ can be evaluated in $O(t)$ \F-operations.
+This implies mutlilinear evaluations can be proven in a batched manner based on Claim \ref{claim:batchipa}.
+Suppose we want to show given committed univariates $g,h\in\polys$, $u_1,u_2\in \F^t,v_1,v_2\in \F$ that
+$\mle{g}(u_1)=v_1$ and $\mle{h}(u_2)=v_2$.
+\begin{enumerate}
+ \item \ver sends random $\gamma\in \F$.
+ \item \prv sends commitment to $S$ such that
+\[ g_1(X)P_{u_1}(1/X)+ g_1(X) P_{u_1}(1/X) + \gamma(h_1(X)P_{u_2}(1/X) + h_1(1/X)P_{u_2{(X)) = 2(v_1+\gamma v_2) + X\cdot S(X)+(1/X)S(1/X).\]
+\item \ver chooses a random $\zeta\in \F$.
+\item \prv sends and proves correctness of the values $g_1(/
+\end{enumerate}
 
 \subsection{Degree checks}
 This is based on Thakur \cite{thakur}.
