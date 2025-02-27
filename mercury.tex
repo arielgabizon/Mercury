@@ -593,13 +593,13 @@ As opposed to previous methods, the proof size and prover time remain constant \
     A different class of SNARKs \cite{spartan, hyperplonk} arising from the sumcheck protocol \cite{lfkn} have linear prover time, but require \emph{multilinear} Polynomial Commitment Schemes (\mlpcs's).
     
 \subsection{Our results}
-    Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini and \zeromorph, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost, to perform univariate polynomial multiplication via FFT's.
-    We propose a new protocol that goes beyond this tradeoff: a protocol with constant proof size and only $O(n)$ prover operations (besides the $O(\lambda n/(\log(n \lambda))$ operations for muti-scalar multiplications arising in KZG commitments).
-    Additionally, this is concretely more efficient than existing schemes, with a smaller constant factor of prover work ($1 + o(1)$ or $2 + o(1)$ compared to $2.5$ for \zeromorph)  and concretely small proof sizes.
+    Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini\cite{gemini} and \zeromorph\cite{zeromorph}, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost to perform univariate polynomial multiplication via FFT's.
+    We propose a new protocol called \mercury that goes beyond this tradeoff: a protocol with constant proof size and only $O(n)$ prover operations (besides the $O(\lambda n/(\log(\lambda n))$ operations for muti-scalar multiplications arising in KZG commitments).
+    Additionally, \mecury is concretely more efficient than existing schemes in terms of required MSMs as can be seen in table \ref{table:comparison} 
 
 
 
-\begin{table}[!htbp]
+\begin{table}[!htbp]\label{table:comparison}
 	\caption{ Comparison of pairing-based \mlpcs. \G denotes a scalar multiplication. All verifiers below additionally require two pairings. }
 	\centering
 % \begin{adjustbox}{width=1\textwidth}
