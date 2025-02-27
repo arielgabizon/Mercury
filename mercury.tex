@@ -542,7 +542,7 @@
 \renewcommand{\root}{\ensuremath{\mathbf{r}}\xspace}
 \renewcommand{\eq}{\ensuremath{\mathbf{eq}}\xspace}
 \newcommand{\eqpol}[1]{\ensuremath{P_{#1}}\xspace}
-\newcommand{\mle}[1]{\ensuremath{\mathsf{ml}(#1)}\xspace}
+\newcommand{\mle}[1]{\ensuremath{\hat{#1}}\xspace}
 \newcommand{\predinst}{\ensuremath{\mathpgoth{f}}\xspace}
 \renewcommand{\empty}{\ensuremath{g_{\mathscr{empty}}}\xspace}
 \newcommand{\funcs}{\ensuremath{\mathsf{F}}\xspace}
@@ -585,6 +585,15 @@ As opposed to previous methods, the proof size and prover time remain constant \
 % a As opposed to more familiar folding methods - e.g. as used in the sumcheck protocol - this allows to fold the witness by a \emph{super-constant} factor with a \emph{linear} (rather than superlinear)  number of field operations and scalar multiplications.
 \end{abstract}
 \section{Introduction}
+    Polynomial Commitment Schemes (PCSs)\cite{kzg} allow a party to commit to a polynomial and later prove an evaluation of the polynomial is correct.
+    That is, for a commitment $\cm$ and values $a,b$; a prover  \prv can produce a proof that $\cm = \com(f(X))$ and $f(a) = b$.
+    PCSs form an essential part of most modern Succinct Non-interactive ARguments of Knowledge (SNARKs). They allow a protocol designer to focus on designing a so-called  polynomial Interactive Oracle Proof  which can then be compiled, via a PCS, to a SNARK (see \cite{dark,plonk,marlin} for descriptions of such compilers).
+    In fact, many of the most important properties of a SNARK, like proof size, verifier complexity, and cryptographic assumptions, follow primarily from the PCS.
+    The earliest polynomial commitment schemes \cite{kzg} supported univariate polynomials and were used to construct SNARKs like Plonk \cite{plonk} and Marlin \cite{marlin} with $O(n \log n)$ prover complexity and constant proof size.
+    A different class of SNARKs \cite{spartan, hyperplonk, honk} arising from the sumcheck protocol \cite{lfkn} have linear prover time, but require multilinear Polynomial Commitment Schemes (\mlpcs's).
+    Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini and \zeromorph, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost, to perform univariate polynomial multiplication via FFT's.
+    We propose a new protocol that reconciles this tradeoff: a protocol with constant proof size and linear prover time.
+    Additionally, this is concretely more efficient than existing schemes, with a smaller constant factor of prover work ($1 + o(1)$ or $2 + o(1)$ compared to $2.5$ for Zeropmorph)  and concretely small proof sizes.
 
 
 \subsection{Our results}
@@ -660,7 +669,7 @@ Calculation shows
 \[g(X)= \sum_{0\leq i < b} X^i f_i(\alpha).\]
 % \prv will send $\g\defeq \cm(g)$ and prove its correctness via a quotient.
 The multilinear $\mle{g}$ corresponding to $g(X)$ is 
-\[\mle{g}(X_0,\ldots X_{t-1}) = \sum_{0\leq i < b} \eq(i,X_0,\ldots,X_{u-1})f_i(\alpha)
+\[\mle{g}(X_0,\ldots X_{t-1}) = \sum_{0\leq i < b} \eq(i,X_0,\ldots,X_{t-1})f_i(\alpha)
 \]
 In particular, we have 
 \[\mle{g}(u_1) = \sum_{0\leq i < b} \eq(i,u_1)f_i(\alpha)=h(\alpha).\]
@@ -677,7 +686,7 @@ $$ M(u) = \sum_{b \in B_s} \eq(b, u) M(b). $$
 
 
 The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. In the above spirit, we could look at a modified sumcheck protocol, where the first variable ranges over a domain of super-constant size $b$. The first round univariate $P_1$ would thus have degree roughly $2b$. 
-To maintain constant proof length, we could send a commitment to $P_1$ rather than its coefficients.
+To maintain constant proof length, we could send a commitment to $P_1$ rather than its coefficients (as usually done in sumcheck).
 However, \emph{computing} $P_1$ would require superlinear time  $O(n \log b)$ - as we need to perform a $b$-size FFT for $n/b$ values of the second variable appearing in the sum. 
 
 
@@ -806,8 +815,9 @@ See \cite{plonk} for the proof.
 
 \subsection{Polynomial commitment schemes for multilinear polynomials}
 
+We give a formal definition of a multilinear polynomial commitment scheme secure in the algebraic group model.
 \begin{dfn}\label{dfn:mlpcs}
-Let $n=2^t$. A multi-linear polynomial commitment scheme (ml-PCS) consists of 
+Let $n=2^t$. A multilinear polynomial commitment scheme (ml-PCS) consists of 
 \begin{itemize}
  \item $\gen(n)$ -  a randomized algorithm that outputs an SRS \srs0.
  \item $\com(f,\srs)$ - that given a polynomial $f\in \F^n$ returns a commitment \cm to $f$.
