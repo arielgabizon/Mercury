@@ -637,7 +637,7 @@ Here is a first idea on how to reduce proof length.
 Protocols based on univariate polynomials allow us to do multilinear evaluation in $O(n\log n)$ prover time with constant proof size (e.g. Section 5 of \cite{logupgkr}) .
 Choose a parameter $t$ and set $b=2^t$.
 We can run \emph{only the first $t$ rounds} of \gemini, reaching a restricted multilinear on $n-t$ variables.
-If $n'=n/b\leq n/\log n$, we can afford to run a univariate protocol with $O(n' \log n')=O(n)$ prover time to evaluate $M_t(u_t,\ldots,u_s)$.
+If $n'=n/b\leq n/\log n$, we can afford to run a univariate protocol with $O(n' \log n')=O(n)$ prover time to evaluate $M_t(u_t,\ldots,u_{s-1})$.
 This still doesn't take us to overall constant proof size - as we  need to use a super-constant $t$ to reach such $n'$. (For us $t=\log n/2$ will be optimal, although $t\geq \log \log n$ suffices here.)
 
 
@@ -666,17 +666,18 @@ In particular, we have
 \[\mle{g}(u_1) = \sum_{0\leq i < b} \eq(i,u_1)f_i(\alpha)=h(\alpha).\]
 In words, the evaluation of $g$ at $u_1$ as a \emph{multilinear} corresponds to 
 the evaluation of $h$ at $\alpha$ as a univariate!
-We can use standard univariate KZG to open $\cm_t$ at $\alpha)$a
+We can use standard univariate KZG to open $\cm_t$ at $\alpha$.
 And, crucially, we can afford to evaluate $\mle{g}(u_1)$ using the aforementioned univariate protocols as it is of size $b$ rather than $n$.
 In summary, we can show a committed polynomial corresponds to the correct restriction. And now, again, we can afford to open $h$ as a multilinear at $u_2$ using univariate protocols
 as it has size $n/b$ rather than $n$.
 \paragraph{Comparison to sumcheck}
 It is instructive to see what  happens if we try to get a similar result via a modification of the sumcheck protocol \cite{lfkn}.
-Note first that a multilinear evaluation can indeed   written as a sum over the function's values on the \B{n} multiplied by the \eq function:
-$$ \hat{f}(u) = \sum_{b \in B_s} \eq(b, u) \hat{f}(b). $$
+Note first that a multilinear evaluation can indeed   written as a sum over the function's values on \B{s} multiplied by the \eq function:
+$$ M(u) = \sum_{b \in B_s} \eq(b, u) M(b). $$
 
 
-The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. In the above spirit, we could look at a modified sumcheck protocol, where the first variable ranges over a domain of super-constant size $b$. The first round univariate $P_1$ would thus have degree $2b$ in our case. We can send a  commitment to it rather than its coefficients as usually done to maintain constant proof size.
+The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. In the above spirit, we could look at a modified sumcheck protocol, where the first variable ranges over a domain of super-constant size $b$. The first round univariate $P_1$ would thus have degree roughly $2b$. 
+To maintain constant proof length, we could send a commitment to $P_1$ rather than its coefficients.
 However, \emph{computing} $P_1$ would require superlinear time  $O(n \log b)$ - as we need to perform a $b$-size FFT for $n/b$ values of the second variable appearing in the sum. 
 
 
