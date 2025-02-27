@@ -591,12 +591,13 @@ As opposed to previous methods, the proof size and prover time remain constant \
     In fact, many of the most important properties of a SNARK, like proof size, verifier complexity, and cryptographic assumptions, follow primarily from the PCS.
     The earliest polynomial commitment schemes \cite{kzg} supported univariate polynomials and were used to construct SNARKs like Plonk \cite{plonk} and Marlin \cite{marlin} with $O(n \log n)$ prover complexity and constant proof size.
     A different class of SNARKs \cite{spartan, hyperplonk, honk} arising from the sumcheck protocol \cite{lfkn} have linear prover time, but require multilinear Polynomial Commitment Schemes (\mlpcs's).
-    Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini and \zeromorph, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost, to perform univariate polynomial multiplication via FFT's.
-    We propose a new protocol that reconciles this tradeoff: a protocol with constant proof size and linear prover time.
-    Additionally, this is concretely more efficient than existing schemes, with a smaller constant factor of prover work ($1 + o(1)$ or $2 + o(1)$ compared to $2.5$ for Zeropmorph)  and concretely small proof sizes.
-
-
+    
 \subsection{Our results}
+    Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini and \zeromorph, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost, to perform univariate polynomial multiplication via FFT's.
+    We propose a new protocol that goes beyond this tradeoff: a protocol with constant proof size and only $O(n)$ prover operations (besides the $O(\lambda n/(\log(n \lambda))$ operations for muti-scalar multiplications arising in KZG commitments).
+    Additionally, this is concretely more efficient than existing schemes, with a smaller constant factor of prover work ($1 + o(1)$ or $2 + o(1)$ compared to $2.5$ for \zeromorph)  and concretely small proof sizes.
+
+
 
 \begin{table}[!htbp]
 	\caption{ Comparison of pairing-based \mlpcs. \G denotes a scalar multiplication. All verifiers below additionally require two pairings. }
@@ -620,14 +621,16 @@ As opposed to previous methods, the proof size and prover time remain constant \
  In this overview, we use some of the notation defined in Sections \ref{sec:terminology} and \ref{sec:multilin-polys}.
 \end{remark}
 
-Our technique is best thought of as an improvement of the \mlpcs from \gemini \cite{gemini}.
+Our technique is best thought of as an improvement of the \gemini \mlpcs\cite{gemini}.
 Let's start by recalling how \gemini works.
 \gemini commits to a multilinear function as a \emph{univariate} KZG commitment\cite{kzg}. Specifically,
 fix a vector $f\in \F^n$ describing the function's values on the boolean cube \B{s} where $s=\log n$. That is, we think of $f$ as representing the 
 multilinear
-\[M(X_0,\ldots,X_{s-1})= \sum{u\in \B{s}}\eq(u,X_0,\ldots,X_{s-1}) f_i.\]
+\[M(X_0,\ldots,X_{s-1})= \sumi{n}\eq(i,X_0,\ldots,X_{s-1}) f_i.\]
+(Here, as explained in Section \ref{sec:multilin-polys}, we interpret $i$ as its binary decomposition $(i_0,\ldots,i_{s-1})$
+when used as input to \eq.)
 Let $\srs =\sett{\enc{x^i}}{i<n}$be a KZG structured reference string.
- \gemini outputs $\cm=\sumi{n}f_i \enc{x^i}$ as a commitment to $M$  
+ \gemini outputs $\cm=\enc{f(x)}=\sumi{n}f_i \enc{x^i}$ as a commitment to $M$.  
 
 
 Now suppose prover \prv wants to convince verifier \ver  that $M(u)=v$, for some $u=(u_0,\ldots,u_{s-1})\in \F^s$. In \gemini, \prv sends commitments $\cm_1,\ldots,\cm_s$ to the $s$ incremental restrictions leading  to evaluation at $u$.
@@ -1013,7 +1016,8 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
 \item  \textsf{KZG evaluations:} 
 \begin{enumerate}
 \item  \ver sends a random evaluation challenge $\zeta \in \F$.
-\item \prv sends the values $\fzeta\defeq f(\zeta),\qzeta \defeq q(\zeta), \gzeta \defeq g(\zeta), \ginv \defeq g(1/\zeta), \hzeta \defeq h(\zeta), \hinv \defeq h(1/\zeta), \halpha\defeq h(\alpha),\szeta \defeq s(\zeta),\sinv\defeq s(1/\zeta),\dzeta\defeq D(\zeta)$.\label{step:evals}
+\item \prv sends the values $\fzeta\defeq f(\zeta),\qzeta \defeq q(\zeta), \gzeta \defeq g(\zeta), \ginv \defeq g(1/\zeta), \hzeta \defeq h(\zeta), \hinv \defeq h(1/\zeta), \halpha\defeq h(\alpha),\szeta \defeq S(\zeta),\sinv\defeq S(1/\zeta)$.\label{step:evals}
+\item \ver computes the expected value for $D(\zeta)$ - $\dzeta\defeq  \zeta^{b-1} \ginv$.
 \item \ver sends a random KZG batching challenge $\eta\in \F$.
 \item \prv computes and sends the KZG opening proof  \prfzeta for the values \fzeta and \qzeta. That is $\prfzeta \defeq \enc{H(x)}$ for
 \[H(X) \defeq \frac{f(X)-f(\zeta) +\eta(q(X)-q(\zeta))}{X-\zeta}.\]
@@ -1023,8 +1027,8 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
    \item \ver checks the opening proof \prfother as described in \cite{shplonk}.
    \item \ver checks the equation
 
-\[\gzeta \eqpol{u_1}(1/\zeta) + \ginv \eqpol{u_1}(\zeta) + \gamma(\hzeta \eqpol{u_2}(1/\zeta) + \hinv \eqpol{u_2}(\zeta))= \halpha +\gamma v + \zeta \szeta + (1/\zeta)\sinv.\]   
-\item \ver checks the equation $\dzeta=\zeta^{b-1} \ginv$.\label{step:checklast}
+\[\gzeta \eqpol{u_1}(1/\zeta) + \ginv \eqpol{u_1}(\zeta) + \gamma(\hzeta \eqpol{u_2}(1/\zeta) + \hinv \eqpol{u_2}(\zeta))= \halpha +\gamma v + \zeta \szeta + (1/\zeta)\sinv.\]  \label{step:checklast} 
+% \item \ver checks the equation $\dzeta=\zeta^{b-1} \ginv$.
 \item If one of the checks in steps \ref{step:checkfirst}-\ref{step:checklast} fails, \ver outputs \rej. Otherwise \ver outputs \acc.
 
 \end{enumerate}
