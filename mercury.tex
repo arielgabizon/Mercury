@@ -590,7 +590,7 @@ As opposed to previous methods, the proof size and prover time remain constant \
     PCSs form an essential part of most modern Succinct Non-interactive ARguments of Knowledge (SNARKs). They allow a protocol designer to focus on designing a so-called  polynomial Interactive Oracle Proof  which can then be compiled, via a PCS, to a SNARK (see \cite{dark,plonk,marlin} for descriptions of such compilers).
     In fact, many of the most important properties of a SNARK, like proof size, verifier complexity, and cryptographic assumptions, follow primarily from the PCS.
     The earliest polynomial commitment schemes \cite{kzg} supported univariate polynomials and were used to construct SNARKs like Plonk \cite{plonk} and Marlin \cite{marlin} with $O(n \log n)$ prover complexity and constant proof size.
-    A different class of SNARKs \cite{spartan, hyperplonk, honk} arising from the sumcheck protocol \cite{lfkn} have linear prover time, but require multilinear Polynomial Commitment Schemes (\mlpcs's).
+    A different class of SNARKs \cite{spartan, hyperplonk} arising from the sumcheck protocol \cite{lfkn} have linear prover time, but require \emph{multilinear} Polynomial Commitment Schemes (\mlpcs's).
     
 \subsection{Our results}
     Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini and \zeromorph, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost, to perform univariate polynomial multiplication via FFT's.
@@ -818,7 +818,7 @@ See \cite{plonk} for the proof.
 
 \subsection{Polynomial commitment schemes for multilinear polynomials}
 
-We give a formal definition of a multilinear polynomial commitment scheme secure in the algebraic group model.
+We give a formal definition of a \mlpcs secure in the algebraic group model.
 \begin{dfn}\label{dfn:mlpcs}
 Let $n=2^t$. A multilinear polynomial commitment scheme (ml-PCS) consists of 
 \begin{itemize}
