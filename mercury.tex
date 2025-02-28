@@ -119,6 +119,29 @@
 \newcommand{\company}{}
 \title{ \bf \papertitle \\[0.72cm]}
 \author{ Liam Eagen \\ \tt{Alpen Labs}   \and Ariel Gabizon \\ \tt{Aztec Labs} } 
+% \author{
+%     Liam Eagen \\ {\small \texttt{Alpen Labs}} 
+%     \and 
+%     Ariel Gabizon \\ {\small \texttt{Aztec Labs}}
+% }
+% \author{
+%     \hspace[.5\linewidth]{Liam Eagen \\ \tt{Alpen Labs}}
+%     \and
+%     \hspace[.5\linewidth]{Ariel Gabizon \\ \tt{Aztec Labs}}
+% }
+% \author{
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         Liam Eagen \\
+%         \tt{Alpen Labs}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         Ariel Gabizon \\
+%         \tt{Aztec Labs}
+%     \end{minipage}
+% }
 
 % otherwise the current date is printed
 \DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}
@@ -664,7 +687,7 @@ $f_i(r^b)$ is a linear combination of  $\set{f(r),f(r\omega),\ldots,f(r\omega^{b
 
 
 Our central innovation is a different way to prove $\cm_t$ is correct \emph{with} constant proof size.
-Let's switch notation and denote the opening point as $u=(u_1,u_2)$ where $u_1,u_2\in \F^t$.
+Let's switch notation and denote the opening point as $u=(u_1,u_2)$ where $u_1\in \F^t,u_2\in \F^{s-t}$.
 The (univariate corresponding to the) correct restricted polynomial is 
 \[h(X) = \sum_{0\leq i < b} \eq(i,u_1)f_i(X).\]
 % We'll show $\cm_t$ opens to $h(\alpha)$ for random $\alpha$ chosen by \ver as follows.
@@ -883,7 +906,7 @@ Thus, $<g_1,g_2>=v$ is equivalent to the existence of polynomials $S_1(X),S_2(X)
 We can thus sends commitments to $S_1,S_2$ as proof of the correctness of $v$.
 As an optimization, we observe that we can ``symmetrize'' $R$ and look instead at the rational function
 
-\[R'(X)\defeq g_1(X) g_2(1/X)+g_1(1/X) g_2(1/X).\]
+\[R'(X)\defeq g_1(X) g_2(1/X)+g_1(1/X) g_2(X).\]
 The advantage of $R'$ is that the negative and positive coefficients are equal. Thus,
 $<g_1,g_2>=v$ is equivalent to the existence of $S(X)\in \polys$ such that
 
@@ -1094,7 +1117,7 @@ $ D(\zeta) = \zeta^{b-1} g(1/\zeta)$,
 \end{enumerate}
 Note that items \ref{item:first}-\ref{item:last} can be viewed as rational equations evaluated at $\zeta$.
 Let $E_1$ be the event that $E_0$ didn't occur, and one of the equations in steps \ref{item:first}-\ref{item:last}
-doesn't hold as a rational identity. Multiplying denominators, we have from  Schwarz-Zippel Lemma that $E_1$ occurs with probability at most $2n/|\F| = \negl$ over $\zeta \in \F$.
+doesn't hold as a rational identity. Multiplying denominators, we have from the Schwarz-Zippel Lemma that $E_1$ occurs with probability at most $2n/|\F| = \negl$ over $\zeta \in \F$.
 Assuming $E_0$ and $E_1$ didn't occur we have that 
 
 \begin{enumerate}
