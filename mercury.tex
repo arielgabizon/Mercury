@@ -167,7 +167,7 @@
 \newcommand{\srs}{\ensuremath{\mathsf{srs}}\xspace}
 \newcommand{\regsrs}[1]{\ensuremath{\sett{\enc1{x^i}}{i\in \set{0,\ldots,#1-1}}}\xspace}
 \newcommand{\srsm}{\ensuremath{\mathsf{srs}_M}\xspace}
-\newcommand{\ext}{\ensuremath{E}\xspace}
+\newcommand{\ext}{\ensuremath{\mathcal{E}}\xspace}
 \newcommand{\srsbase}{\ensuremath{\mathsf{srs_0}}\xspace}
 \newcommand{\srsi}{\ensuremath{\mathsf{srs_i}}\xspace}
 \newcommand{\com}{\ensuremath{\mathsf{com}}\xspace}
@@ -549,7 +549,7 @@
 \newcommand{\prob}{\ensuremath{\mathsf{prob}}\xspace}
 \newcommand{\ztafuncs}{\ensuremath{\mathcal{D}}\xspace}
 \newcommand{\prodt}{\ensuremath{\prod_{i=0}^{t-1}}\xspace}
-\newcommand{\B}[1]{\ensuremath{B_{#1}}\xspace}
+\newcommand{\B}[1]{\ensuremath{\mathbf{B}_{#1}}\xspace}
 \newcommand{\shlomomath}[1]{\ensuremath{\text{\usefont{U}{BOONDOX-cal}{m}{n}#1}}\xspace}
 \newcommand{\acc}{\ensuremath{\shlomomath{accept}}\xspace}
 \newcommand{\mlpcs}{ml-PCS\xspace}
@@ -633,23 +633,23 @@ Let $\srs =\sett{\enc{x^i}}{i<n}$be a KZG structured reference string.
  \gemini outputs $\cm=\enc{f(x)}=\sumi{n}f_i \enc{x^i}$ as a commitment to $M$.  
 
 
-Now suppose prover \prv wants to convince verifier \ver  that $M(u)=v$, for some $u=(u_0,\ldots,u_{s-1})\in \F^s$. In \gemini, \prv sends commitments $\cm_1,\ldots,\cm_s$ to the $s$ incremental restrictions leading  to evaluation at $u$.
-Namely, to $M_1=M(u_0,X_1,\ldots,X_{s-1})$, $M_2=M(u_0,u_1,X_2,\ldots,X_{s-1}),\ldots,M_s=M(u_0,\ldots,u_{s-1})$.
+Now suppose prover \prv wants to convince verifier \ver  that $M(z)=v$, for some $z=(z_0,\ldots,z_{s-1})\in \F^s$. In \gemini, \prv sends commitments $\cm_1,\ldots,\cm_s$ to the $s$ incremental restrictions leading  to evaluation at $z$.
+Namely, to $M_1=M(z_0,X_1,\ldots,X_{s-1})$, $M_2=M(z_0,z_1,X_2,\ldots,X_{s-1}),\ldots,M_s=M(z_0,\ldots,z_{s-1})$.
 Assuming \prv sent commitments to the correct functions, all that is needed is to check that $\cm_s$ is the commitment to the constant $v$. Of course, the interesting part is proving the commitments \emph{are} to the correct functions!
 
 For this purpose, \gemini exploits a connection between $M$ and its corresponding univariate $f(X)$:
-Write $f(X)=f_0(X^2)+X f_1(X^2)$, for $f_0(X),f_1(X)$ of degree $<n/2$. Let $f_{u_1}(X)$ be the univariate corresponding to $M_1$ defined above. Then, we have
-\[f_{u_1}(X)=(1-u_1)f_0(X)+ u_1 f_1(X).\]
+Write $f(X)=f_0(X^2)+X f_1(X^2)$, for $f_0(X),f_1(X)$ of degree $<n/2$. Let $f_{z_0}(X)$ be the univariate corresponding to $M_1$ defined above. Then, we have
+\[f_{z_0}(X)=(1-z_0)f_0(X)+ z_0 f_1(X).\]
 Additionally, we can evaluate $f_0$ and $f_1$ via $f$  using the equations
 \[f_0(X^2)=\frac{f(X)+f(-X)}{2}, f_1(X^2)=\frac{f(X)-f(-X)}{2X}\]
 Thus, we can perform consistency checks between each pair $\cm_{i-1},\cm_i$, via univariate KZG openings at a random challenge, inductively showing $\cm_i$ is indeed the commitment to the next desired restriction.
 Of course, we get $O(s)=O(\log n)$ proof length due to this sequence of restriction commitments.
 
 Here is a first idea on how to reduce proof length.
-Protocols based on univariate polynomials allow us to do multilinear evaluation in $O(n\log n)$ prover time with constant proof size (e.g. Section 5 of \cite{logupgkr}) .
+Protocols based on univariate polynomials allow us to do multilinear evaluation in $O(n\log n)$ prover time with constant proof size (e.g. Section 5 of \cite{logupgkr}).
 Choose a parameter $t$ and set $b=2^t$.
 We can run \emph{only the first $t$ rounds} of \gemini, reaching a restricted multilinear on $n-t$ variables.
-If $n'=n/b\leq n/\log n$, we can afford to run a univariate protocol with $O(n' \log n')=O(n)$ prover time to evaluate $M_t(u_t,\ldots,u_{s-1})$.
+If $n'=n/b\leq n/\log n$, we can afford to run a univariate protocol with $O(n' \log n')=O(n)$ prover time to evaluate $M_t(z_t,\ldots,z_{s-1})$.
 This still doesn't take us to overall constant proof size - as we  need to use a super-constant $t$ to reach such $n'$. (For us $t=\log n/2$ will be optimal, although $t\geq \log \log n$ suffices here.)
 
 
@@ -664,6 +664,7 @@ $f_i(r^b)$ is a linear combination of  $\set{f(r),f(r\omega),\ldots,f(r\omega^{b
 
 
 Our central innovation is a different way to prove $\cm_t$ is correct \emph{with} constant proof size.
+Let's switch notation and denote the opening point as $u=(u_1,u_2)$ where $u_1,u_2\in \F^t$.
 The (univariate corresponding to the) correct restricted polynomial is 
 \[h(X) = \sum_{0\leq i < b} \eq(i,u_1)f_i(X).\]
 % We'll show $\cm_t$ opens to $h(\alpha)$ for random $\alpha$ chosen by \ver as follows.
@@ -684,7 +685,7 @@ In summary, we can show a committed polynomial corresponds to the correct restri
 as it has size $n/b$ rather than $n$.
 \paragraph{Comparison to sumcheck}
 It is instructive to see what  happens if we try to get a similar result via a modification of the sumcheck protocol \cite{lfkn}.
-Note first that a multilinear evaluation can indeed   written as a sum over the function's values on \B{s} multiplied by the \eq function:
+Note first that a multilinear evaluation can indeed   be written as a sum over the function's values on \B{s} multiplied by the \eq function:
 $$ M(u) = \sum_{b \in B_s} \eq(b, u) M(b). $$
 
 
@@ -734,6 +735,23 @@ However, \emph{computing} $P_1$ would require superlinear time  $O(n \log b)$ - 
 
 \section{Preliminaries}
 \subsection{Terminology and conventions}\label{sec:terminology}
+\paragraph{Fields and Groups}
+We assume our field \F is of prime order.
+We denote by \polysofdeg{d} the set of univariate polynomials over \F of degree smaller than d. 
+We assume all algorithms described receive as an implicit parameter the security parameter $\lambda$.
+
+Whenever we use the term \emph{efficient}, we mean an algorithm running in time \poly. Furthermore,
+we assume an \emph{object generator} \obgen that is run with input $\lambda$ before all protocols, and returns all fields and groups used. Specifically, in our protocol $\obgen(\lambda) = (\F, \G1, \G2, \Gt, e, g_1, g_2,g_t)$ where
+\begin{itemize}
+\item \F is a prime field of super-polynomial size $r = \lambda^{\omega(1)}$
+.
+\item $\G1,\G2,\Gt$ are all groups of size $r$, and $e$ is an efficiently computable non-degenerate pairing
+$e : \G1 \times \G2 \to \Gt$.
+\item $g_1,g_2$ are uniformly chosen generators such that $e(g_1, g_2) = g_t$.
+\end{itemize}
+We usually let the $\lambda$ parameter be implicit, i.e.\ write \F instead of $\F(\lambda)$.
+We write \G1 and \G2 additively. We use the notations $\enc{x}\defeq x\cdot g_1$ and $\enctwo{x}\defeq x\cdot g_2$.
+\paragraph{Vectors and polynomials}
 We work with integer parameter $n$ that we'll assume throughout the paper  is of the form
 $n=2^{2t}$ for integer $t>0$. We'll denote its square root by $b\defeq 2^t=\sqrt{n}$.
 We index vectors starting from zero. For example, for $g\in \F^b$ we have $g=(g_0,\ldots,g_{b-1})$.
@@ -744,26 +762,29 @@ We make the convention that integer ranges in sums begin at zero if not specifie
 $g(X)=\sumi{b}g_i X^i$.
 
 We assume vectors of size $n$ are indexed by two indices ranging over $\set{0,\ldots,b-1}$. Thus, for $f\in \F^n$, we have $f=(f_{0,0},\ldots,f_{0,b-1},\ldots,f_{b-1,0},\ldots,f_{b-1,b-1})$.
-Accordingly, for $0\leq i <b$, we denote by $f_i$ the vector $(f_{i,0},\ldots, f_{i,b-1})$.
+ For $0\leq i <b$, we denote by $f_i$ the vector $(f_{0,i},\ldots, f_{b-1,i})$.
 
 In particular, for $f\in \F^n$ we have under these notations that
 \[f(X)\defeq \sumi{b}X^i f_i(X^b) = \sumi{b}\sumj{b}f_{i,j}X^{i+j\cdot b}\]
  
-We denote by \B{t} the binary cube $\set{0,1}^t$ of dimension $t$.
+For integet $m>0$, we denote by \B{m} the binary cube $\set{0,1}^m\subset \F^m$ of dimension $m$.
 \subsection{Multilinear polynomials}\label{sec:multilin-polys}
-Let $n=2^{2t}$.
-We define the well-known \eq multilinear polynomial in $4t$ variables. 
-\[\eq(x,y) \defeq \prodt ( x_i y_i + (1-x_i)(1-y_i))\]
-We have for $x,y \in \B{2t}$, $\eq(x,y)=1$ when $x=y$ and $\eq(x,y)=0$ otherwise.
+Let $n=2^{2t}$, and $s=2t$.
+We define the well-known \eq multilinear polynomial in $2s$ variables. 
+\[\eq(x,y) \defeq \prod_{i=0}^{s-1} ( x_i y_i + (1-x_i)(1-y_i))\]
+We have for $x,y \in \B{s}$, $\eq(x,y)=1$ when $x=y$ and $\eq(x,y)=0$ otherwise.
 
 We use the convention that an integer $0\leq i < n$ can be used as an input to \eq by interpreting $i$ as its binary representation.
-Namely, for $0\leq i <n$, $u\in \F^t$, $\eq(i,u)\defeq \eq(i_1,\ldots, i_t,u)$ where $i=\sum_{j\in [t]} i_j 2^{j-1}$.
+Namely, for $0\leq i <n$, $u\in \F^s$, $\eq(i,u)\defeq \eq(i_0,\ldots, i_{s-1},u)$ where $i=\sumj{s} i_j 2^{j}$.
 
-For $a\in \F^n$, we define $\mle{f}$ to be the multilinear polynomial obtaining $f$'s values on the boolean cube.
+For $f\in \F^n$, we define $\mle{f}$ to be the multilinear polynomial obtaining $f$'s values on the boolean cube.
 Namely,
-\[\mle{a}(X_0,\ldots,X_{t-1}) \defeq \sumi{n}\eq(i,X_1,\ldots,X_t)\cdot a_i.\]
+\[\mle{f}(X_0,\ldots,X_{s-1}) \defeq \sumi{n}\eq(i,X_1,\ldots,X_s)\cdot f_i.\]
 
-
+\paragraph{Decomposing \eq}
+We'll overload \eq to also denote the analgous equality function for $x,y \in \B{t}$.
+With this overloading, given $w_1,w_2,u_1,u_2\in \B{t}$ we have the convenient decomposition
+\[ \eq( (w_1,w_2),(u_1,u_2)) = \eq(w_1,u_1)\eq(w_2,u_2).\]
 
 
 \subsection{The algebraic group model}\label{subsec:agm}
@@ -818,8 +839,7 @@ See \cite{plonk} for the proof.
 
 \subsection{Polynomial commitment schemes for multilinear polynomials}
 
-We give a formal definition of a \mlpcs secure in the algebraic group model.
-In the definition 
+We give a formal definition of an \mlpcs secure in the algebraic group model.
 \begin{dfn}\label{dfn:mlpcs}
 Let $n=2^s$.  A multilinear polynomial commitment scheme (ml-PCS) consists of 
 \begin{itemize}
@@ -830,7 +850,7 @@ Let $n=2^s$.  A multilinear polynomial commitment scheme (ml-PCS) consists of
 such that
 \begin{itemize}
  \item \textbf{Completeness:} 
- Suppose that , $\cm = \com(f,\srs)$.  Then if \open is run correctly with values
+ Suppose that $\cm = \com(f,\srs)$.  Then if \open is run correctly with values
  $n, \cm,u,v=\mle{f}(u)$, \ver outputs \acc with probability one.
  \item \textbf{Knowledge soundness in the algebraic group model:} There exists an efficient \ext such that for any efficient algebraic adversary \adv the probability of \adv winning the following game is \negl over the randomness of \adv and \gen.
  \begin{enumerate}
@@ -858,7 +878,7 @@ We define $<g_1,g_2>$ to be $\sum_{i=0}^d a_i b_i$ where $d\defeq \min \set{d_1,
 We present a convenient way to verify inner products $<g_1,g_2>$ similar to \cite{bootle,sonic}.
 The basic observation is that  $<g_1,g_2>$ is the constant coefficient of the rational function
 $R(X)\defeq g_1(X) g_2(1/X)$.
-Thus, $<g_1,g_2>=v$ is equivalent to the existence of polynomials $S_1,S_2$ such that
+Thus, $<g_1,g_2>=v$ is equivalent to the existence of polynomials $S_1(X),S_2(X)$ such that
 \[g_1(X) g_2(1/X)=1/X\cdot S_1(1/X) + v + X\cdot S_2(X).\] 
 We can thus sends commitments to $S_1,S_2$ as proof of the correctness of $v$.
 As an optimization, we observe that we can ``symmetrize'' $R$ and look instead at the rational function
@@ -883,7 +903,7 @@ FFT to get the coefficients $c_0,\ldots,c_{2b-2}$ of the LHS. Now, we can output
 \paragraph{Batching inner product checks}
 
 Suppose we now have two  inner product claims  $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
-If we choose random $\gamma \in \F$ with high probability
+The following claim gives us a way to randomly batch them so that one polynomial $S(X)$ suffices to prove both.
 % \begin{enumerate}
 %  \item 
 % \ver  chooses random $\gamma \in \F$
@@ -898,7 +918,7 @@ If we choose random $\gamma \in \F$ with high probability
 \end{claim}
 \begin{proof}
 Denote $(v'_1,v'_2)=(<g_1,g_2>,<h_1,h_2>))$.
- The constant coefficient of the LHS is $v'_1+\gamma v'_2$
+ The constant coefficient of the LHS is $v'_1+\gamma v'_2$.
 To satisfy the equation in the claim for some $S$, we need
  \[v'_1+\gamma v'_2=v_1+\gamma v_2,\]
 which can hold for at most one $\gamma$ when $(v_1,v_2)\neq (v'_1,v'_2)$.
@@ -913,25 +933,25 @@ Note that for $g(X)\in \polysofdeg{b}$, we have
 As leveraged in \cite{halo}, we have the product formula
 \[\eqpol{u}(X)=\prodt\left(u_i X^{2^i}+1-u_i\right),
 \]
-implying $\eqpol{u}(X)$ can be evaluated in $O(t)$ \F-operations.
+implying $\eqpol{u}(X)$ can be evaluated in $O(t)$ \F-operations. Hence, a verifier \ver operating in $O(\log n)$ time can evaluate $\eqpol{u}(X)$ itself.
 
 Using the polynomials \eqpol{u}, mutlilinear evaluations can be proven in a batched manner based on Claim \ref{claim:batchipa}:
-Suppose we want to show given committed univariates $g,h\in\polys$, $u_1,u_2\in \F^t,v_1,v_2\in \F$ that
+Suppose we want to show given committed univariates $g(X),h(X)  \in\polys$, $u_1,u_2\in \F^t,v_1,v_2\in \F$ that
 $\mle{g}(u_1)=v_1$ and $\mle{h}(u_2)=v_2$.
 \begin{enumerate}
  \item \ver sends random $\gamma\in \F$.
- \item \prv sends commitment to $S$ such that
-\[ g(X)P_{u_1}(1/X)+ g(X) P_{u_1}(1/X) + \gamma(h(X)P_{u_2}(1/X) + h(1/X)P_{u_2}(X))\]
+ \item\label{item:eqsec4} \prv sends commitment to $S$ such that
+\[ g(X)P_{u_1}(1/X)+ g(1/X) P_{u_1}(X) + \gamma(h(X)P_{u_2}(1/X) + h(1/X)P_{u_2}(X))\]
 \[= 2(v_1+\gamma v_2) + X\cdot S(X)+(1/X)S(1/X).\]
 \item \ver chooses a random $\zeta\in \F$.
 \item \prv sends and proves correctness of the values of $g,h$ and $S$ on $\zeta,1/\zeta$. 
 \item \ver evaluates $P_{u_1},P_{u_2}$ at $\zeta,1/\zeta$. 
-\item \ver checks the above equation holds at $\zeta$.
+\item \ver checks the equation in step \ref{item:eqsec4} holds at $\zeta$.
 \end{enumerate}
 
 \subsection{Degree checks}
 The idea presented here is from \cite{thakur}.
-Suppose \prv wants to prove to \ver that \cm is a commitment to a polynomial $g\in \polysofdeg{b}$.
+Suppose \prv wants to prove to \ver that \cm is a commitment to a polynomial $g(X)\in \polysofdeg{b}$.
 Let $D(X)\defeq  X^{b-1} g(1/X)$. The idea is that $D(X)$ is a polynomial if and only if $g(X)$ has degree $<b$.
 Thus, assuming our structured reference string  doesn't contain negative powers, \prv can commit to $D$ if
 and only if $g(X)\in \polysofdeg{b}$.
@@ -1040,14 +1060,16 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
 \paragraph{Runtime of \prv:}
 Computing $q(X)$ in step \ref{step:modalpha} requires $O(n)$ operations by Claim \ref{clm:univariatemod}.
 Computing $\q$ and $\prfzeta$ requires two MSMs of size $n$. All other steps are on polynomials of size $O(b)=O(\sqrt{n})$.
-Thus other commitments clearly require $O(\sqrt{n})$ scalar multiplications. It is easy to see other steps require $o(n)$ \F-operations. The least trivial of these is perhaps the computation of $S(X)$ shown to require $O(b \log b)=o(n)$ operations in Claim \ref{clm:computeS}.
+Thus, other commitments clearly require $O(\sqrt{n})$ scalar multiplications. It is easy to see other steps require $o(n)$ \F-operations. The least trivial of these is perhaps the computation of $S(X)$ shown to require $O(b \log b)=o(n)$ operations in Claim \ref{clm:computeS}.
 \paragraph{Proving knowledge soundness:}
 
 Let \adv be an efficient algebraic adversary participating in the Knowledge Soundness game from
 Definition \ref{dfn:mlpcs}.
 We show its probability of winning the game is \negl.
-Let $f\in \F^n$ be the vector sent by \adv in the third step of the game
-such that $\cm=\enc{f(x)}$.
+We define the extractor \ext to simply output the vector $f\in \F^n$ \adv outputs (as it's algebraic) with $\com(f)=\cm$ together with \cm.
+
+% Let $f\in \F^n$ be the vector sent by \adv in the third step of the game
+% such that $\cm=\enc{f(x)}$.
 As \adv is algebraic, when sending the commitments \h,\q,\g,\s,\d,\prfzeta,\prfother during protocol execution it also sends polynomials $h(X),q(X),g(X),$ $S(X),D(X),H(X),Q(X)\in \polysofdeg{n}$ such that the former are their corresponding commitments.
 Let $E$ be the event that \ver outputs \acc.
 Let $A$ be the event that \adv wins the knowledge soundness game.
@@ -1104,14 +1126,14 @@ Since
 $ D(X) = X^{b-1} g(1/X)$ we know that $\deg(g)<b$.
 Since  $g(X) =  f(X)-(X^b-\alpha)q(X)$, from Claim \ref{clm:univariatemod} we know that
 $g(X)=\sumi{b}f_i(\alpha)X^i$.
-We know that 
-\[\mle{g}(u_1) = \sumi{b}\eq(i,u_1) f_i(\alpha) = h(\alpha)\]
-Using $\not E_3$ we  know that
+Hence, we know that 
+\[\mle{g}(u_1) = \sumi{b}\eq(i,u_1) f_i(\alpha) = h(\alpha).\]
+Using $\neg E_3$ we  know that
 $h(X)=\sumi{b}\eq(i,u_1) f_i(X)$.
 Hence, writing $h(X)=\sumj{b}h_j X^j$ we have 
-$h_j= \sumi{b}\eq(i,u_1) f_{i,j}$
+$h_j= \sumi{b}\eq(i,u_1) f_{i,j}$.
 Thus, we have
-\[\mle{f}(u) = \sumj{b}\sumj{b}\eq(i,u_1)\eq(j,u_2) f_{i,j} = \sumj{b}\eq(j,u_2) \sumi{b}\eq(i,u_1) f_{i,j} \]
+\[\mle{f}(u) = \sumi{b}\sumj{b}\eq(i,u_1)\eq(j,u_2) f_{i,j} = \sumj{b}\eq(j,u_2) \sumi{b}\eq(i,u_1) f_{i,j} \]
 \[=\sumj{b} \eq(j,u_2) h_j = \mle{h}(u_2) = v.\]
 
 
