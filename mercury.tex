@@ -694,45 +694,6 @@ To maintain constant proof length, we could send a commitment to $P_1$ rather th
 However, \emph{computing} $P_1$ would require superlinear time  $O(n \log b)$ - as we need to perform a $b$-size FFT for $n/b$ values of the second variable appearing in the sum. 
 
 
-% 
-% 
-% 
-% 
-% Define $f_{u}=f_0+u\cdot f_1$. We think of $f_u$ as a ``folding'' 
-% of $f$. Then \mle{f_u}
-% is exactly the restriction $\mle{f}(u_1,X_2,\ldots,X_{\log n}$.
-% 
-% Recall that an MLE evaluation claim can be written in terms of a sumcheck over the values of the MLE over the boolean cube, weighted by the \eq function:
-% $$ \hat{f}(u) = \sum_{b \in B_n} \hat{eq}(b, u) \hat{f}(b). $$
-% 
-% This allows us to generically reduce the problem of MLE evaluation to a degree $2$ sumcheck protocol.
-% There are many different protocols for sumchecks, which roughly break down into two families.
-% \begin{itemize}
-% \item The first includes the univariate Arora sumcheck \cite{aurora}, incremental sumcheck \cite{}, and inner product protocols.
-% These protocols all yield constant sized proofs, but require multiplying encodings of $\hat{f}$ and $\hat{eq}$ as univariate polynomials.
-% This requires $O(N \log N)$ time.
-% 
-% \item 
-% The other family of protocols are inspired by the classical sumcheck protocol. The idea
-% from which these evaluation claims typically arise.
-% In these protocols, the vectors are incrementally folded in half in linear time, resulting in an overall linear running time because $n/2 + n/4 + ... = O(n).$
-% Commitments to these folded vectors are sent to the verifier, resulting in a logarithmically sized proof.
-% This family includes both Zeromorph and Gemini\cite{zeromorph,gemini}.
-% 
-% However, these two families of protocols exist as extremes in a spectrum of sumcheck protocols, parameterized by a sequence of $(n_1, ..., n_k)$ such that $\prod_{i=1}^k n_i = n.$
-% In these protocols, rather than folding by a factor of $2$ over $n$ rounds, or by a factor of $n$ over $1$ rounds, they are folded by the factors $n_i$ over $i$ rounds.
-% Heuristically, we expect folding a vector of length $n$ by a factor of $n_1$ to take $O(n \log n_1)$ time.
-% 
-% \end{itemize}
-% 
-% 
-% Let $f$ be our function.
-% Our starting point, which is common, is viewing a multilinear evaluation as a sum of  over the boolean cube
-% 
-% We wish to use the idea that a multilinear evaluation 
-% 
-
-
 \section{Preliminaries}
 \subsection{Terminology and conventions}\label{sec:terminology}
 \paragraph{Fields and Groups}
@@ -1031,7 +992,7 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
 \item \ver sends a random batching challenge $\gamma \in \F$.
 \item \label{step:sendS} \prv computes and sends $\s=\enc{S(x)}$ where $S(X)\in \F[X]$ is  such that
 \[g(X)\eqpol{u_1}(1/X) + g(1/X)\eqpol{u_1}(X)+ \gamma\cdot ( h(X)\eqpol{u_2}(1/X) + h(1/X)\eqpol{u_2}(X) )\]
-\[  =h(\alpha) +\gamma \cdot v+X\cdot S(X)+(1/X)S(1/X).\]
+\[  =2(h(\alpha) +\gamma \cdot v)+X\cdot S(X)+(1/X)S(1/X).\]
 \item \prv computes and sends $\d\defeq \enc{D(x)}$ where  \label{step:sendD}
 \[D(X)\defeq X^{b-1} g(1/X).\]
 \end{enumerate}
@@ -1040,7 +1001,7 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
 \item  \ver sends a random evaluation challenge $\zeta \in \F$.
 \item \prv sends the values $ \gzeta \defeq g(\zeta), \ginv \defeq g(1/\zeta), \hzeta \defeq h(\zeta), \hinv \defeq h(1/\zeta), \halpha\defeq h(\alpha),\szeta \defeq S(\zeta),\sinv\defeq S(1/\zeta)$.\label{step:evals}
 \item\label{step:computevals} \ver computes the expected values for $D(\zeta)$ and $h(\alpha)$ assuming the equations in steps \ref{step:sendS},\ref{step:sendD} are satisfied. That is,  $\dzeta\defeq  \zeta^{b-1} \ginv$, and 
-\[\halpha\defeq \gzeta \eqpol{u_1}(1/\zeta) + \ginv \eqpol{u_1}(\zeta) + \gamma(\hzeta \eqpol{u_2}(1/\zeta) + \hinv \eqpol{u_2}(\zeta))- \gamma v + \zeta \szeta + (1/\zeta)\sinv.\]
+\[\halpha\defeq \left(\gzeta \eqpol{u_1}(1/\zeta) + \ginv \eqpol{u_1}(\zeta) + \gamma(\hzeta \eqpol{u_2}(1/\zeta) + \hinv \eqpol{u_2}(\zeta)-2v) + \zeta \szeta + (1/\zeta)\sinv\right)/2.\]
 % \item \ver sends a random KZG batching challenge $\eta\in \F$.
 \item \prv computes and sends the KZG opening proof  \prfzeta to check the equation of step \ref{step:modalpha} at $\zeta$. That is $\prfzeta \defeq \enc{H(x)}$ for
 \[H(X) \defeq \frac{f(X)-(\zeta^b-\alpha)q(X)-\gzeta}{X-\zeta}.\]
@@ -1088,7 +1049,7 @@ $ \gzeta=g(\zeta),\ginv = g(1/\zeta),\hzeta= h(\zeta),\hinv =h(1/\zeta), \szeta=
 \item\label{item:first}
 $ D(\zeta) = \zeta^{b-1} g(1/\zeta)$,
 \item 
-\[h(\alpha) =  g(\zeta) \eqpol{u_1}(1/\zeta) + g(1/\zeta)\eqpol{u_1}(\zeta) + \gamma(h(\zeta) \eqpol{u_2}(1/\zeta) + h(1/\zeta) \eqpol{u_2}(\zeta))- \gamma v + \zeta S(\zeta) + (1/\zeta)S(1/\zeta).\]
+\[2(h(\alpha)+\gamma v) =  g(\zeta) \eqpol{u_1}(1/\zeta) + g(1/\zeta)\eqpol{u_1}(\zeta) + \gamma(h(\zeta) \eqpol{u_2}(1/\zeta) + h(1/\zeta) \eqpol{u_2}(\zeta)) - \zeta S(\zeta) - (1/\zeta)S(1/\zeta).\]
 \item\label{item:last}$g(\zeta) =  f(\zeta)-(\zeta^b-\alpha)q(\zeta)-g(\zeta).$
 
 \end{enumerate}
@@ -1101,8 +1062,8 @@ Assuming $E_0$ and $E_1$ didn't occur we have that
 \item\label{item:firstX}
 $ D(X) = X^{b-1} g(1/X)$,
 \item \label{item:Sequation}
-\[h(\alpha)+ \gamma v =  g(X) \eqpol{u_1}(1/X) + g(1/X)\eqpol{u_1}(X) + \gamma(h(X) \eqpol{u_2}(1/X) + h(1/X) \eqpol{u_2}(X))\]
-\[  + X S(X) + (1/X)S(1/X).\]
+\[2(h(\alpha)+ \gamma v) =  g(X) \eqpol{u_1}(1/X) + g(1/X)\eqpol{u_1}(X) + \gamma(h(X) \eqpol{u_2}(1/X) + h(1/X) \eqpol{u_2}(X))\]
+\[  - X S(X) - (1/X)S(1/X).\]
 \item\label{item:lastX}$g(X) =  f(X)-(X^b-\alpha)q(X).$
 
 \end{enumerate}
