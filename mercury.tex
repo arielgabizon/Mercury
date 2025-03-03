@@ -153,6 +153,7 @@
 % \num\newcommand{\G1}{\ensuremath{{\mathbb G}_1}\xspace}
 \newcommand{\Gi}{\ensuremath{{\mathbb G}_i}\xspace}
 \newcommand{\G}{\ensuremath{{\mathbb G}}\xspace}
+\newcommand{\Gtwo}{\ensuremath{{\mathbb G}_2}\xspace}
 \newcommand{\Gstar}{\ensuremath{{\mathbb G}^*}\xspace}
 \newcommand{\x}{\ensuremath{\mathbf{x}}\xspace}
 \newcommand{\z}{\ensuremath{\mathbf{z}}\xspace}
@@ -696,7 +697,7 @@ Calculation shows
 \[g(X)= \sum_{0\leq i < b} X^i f_i(\alpha).\]
 % \prv will send $\g\defeq \cm(g)$ and prove its correctness via a quotient.
 The multilinear $\mle{g}$ corresponding to $g(X)$ is 
-\[\mle{g}(X_0,\ldots X_{t-1}) = \sum_{0\leq i < b} \eq(i,X_0,\ldots,X_{t-1})f_i(\alpha)
+\[\mle{g}(X_0,\ldots X_{t-1}) = \sum_{0\leq i < b} \eq(i,X_0,\ldots,X_{t-1})f_i(\alpha).
 \]
 In particular, we have 
 \[\mle{g}(u_1) = \sum_{0\leq i < b} \eq(i,u_1)f_i(\alpha)=h(\alpha).\]
@@ -709,7 +710,7 @@ as it has size $n/b$ rather than $n$.
 \paragraph{Comparison to sumcheck}
 It is instructive to see what  happens if we try to get a similar result via a modification of the sumcheck protocol \cite{lfkn}.
 Note first that a multilinear evaluation can indeed   be written as a sum over the function's values on \B{s} multiplied by the \eq function:
-$$ M(u) = \sum_{b \in B_s} \eq(b, u) M(b). $$
+$$ M(u) = \sum_{b \in \B{s}} \eq(b, u) M(b). $$
 
 
 The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. In the above spirit, we could look at a modified sumcheck protocol, where the first variable ranges over a domain of super-constant size $b$. The first round univariate $P_1$ would thus have degree roughly $2b$. 
@@ -725,16 +726,17 @@ We denote by \polysofdeg{d} the set of univariate polynomials over \F of degree 
 We assume all algorithms described receive as an implicit parameter the security parameter $\lambda$.
 
 Whenever we use the term \emph{efficient}, we mean an algorithm running in time \poly. Furthermore,
-we assume an \emph{object generator} \obgen that is run with input $\lambda$ before all protocols, and returns all fields and groups used. Specifically, in our protocol $\obgen(\lambda) = (\F, \G1, \G2, \Gt, e, g_1, g_2,g_t)$ where
+we assume an \emph{object generator} \obgen that is run with input $\lambda$ before all protocols, and returns all fields and groups used. Specifically, in our protocol $\obgen(\lambda) = (\F, \G, \Gtwo, \Gt, e, g_1, g_2,g_t)$ where
 \begin{itemize}
 \item \F is a prime field of super-polynomial size $r = \lambda^{\omega(1)}$
 .
-\item $\G1,\G2,\Gt$ are all groups of size $r$, and $e$ is an efficiently computable non-degenerate pairing
-$e : \G1 \times \G2 \to \Gt$.
+\item $\G,\Gtwo,\Gt$ are all groups of size $r$, and $e$ is an efficiently computable non-degenerate pairing
+$e : \G \times \Gtwo \to \Gt$.
 \item $g_1,g_2$ are uniformly chosen generators such that $e(g_1, g_2) = g_t$.
 \end{itemize}
 We usually let the $\lambda$ parameter be implicit, i.e.\ write \F instead of $\F(\lambda)$.
-We write \G1 and \G2 additively. We use the notations $\enc{x}\defeq x\cdot g_1$ and $\enctwo{x}\defeq x\cdot g_2$.
+We write \G and \Gtwo additively. We use the notations $\enc{x}\defeq x\cdot g_1$ and $\enctwo{x}\defeq x\cdot g_2$.
+
 \paragraph{Vectors and polynomials}
 We work with integer parameter $n$ that we'll assume throughout the paper  is of the form
 $n=2^{2t}$ for integer $t>0$. We'll denote its square root by $b\defeq 2^t=\sqrt{n}$.
