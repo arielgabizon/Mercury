@@ -259,7 +259,6 @@
 \newcommand{\enc}[1]{\ensuremath{\left[#1\right]}\xspace}
 \newcommand{\enctwo}[1]{\ensuremath{\left[#1\right]_2}\xspace}
 \newcommand{\gen}{\ensuremath{\mathsf{gen}}\xspace}
-\newcommand{\hgen}{\ensuremath{\omega}\xspace}
 \newcommand{\gops}{\G1-operations\xspace}
 \newcommand{\nlogngops}{$O(n\log n)$ \G1-operations\xspace}
 \newcommand{\nlognfops}{$O(n\log n)$ \F-operations\xspace}
@@ -593,6 +592,7 @@
 \newcommand{\halpha}{\ensuremath{h_{\alpha}}\xspace}
 % \newcommand{\instF}{\ensuremath{\mathrm{x}}\xspace}
 % \newcommand{\witF}{\ensuremath{\mathrm{w}}\xspace}
+\newcommand{\groupgen}{\ensuremath{\shlomomath{g}}\xspace}
 \begin{document}
     \maketitle
 \begin{abstract}
@@ -726,16 +726,16 @@ We denote by \polysofdeg{d} the set of univariate polynomials over \F of degree 
 We assume all algorithms described receive as an implicit parameter the security parameter $\lambda$.
 
 Whenever we use the term \emph{efficient}, we mean an algorithm running in time \poly. Furthermore,
-we assume an \emph{object generator} \obgen that is run with input $\lambda$ before all protocols, and returns all fields and groups used. Specifically, in our protocol $\obgen(\lambda) = (\F, \G, \Gtwo, \Gt, e, g_1, g_2,g_t)$ where
+we assume an \emph{object generator} \obgen that is run with input $\lambda$ before all protocols, and returns all fields and groups used. Specifically, in our protocol $\obgen(\lambda) = (\F, \G, \Gtwo, \Gt, e, \groupgen, \groupgen_2,\groupgen_t)$ where
 \begin{itemize}
 \item \F is a prime field of super-polynomial size $r = \lambda^{\omega(1)}$
 .
 \item $\G,\Gtwo,\Gt$ are all groups of size $r$, and $e$ is an efficiently computable non-degenerate pairing
 $e : \G \times \Gtwo \to \Gt$.
-\item $g_1,g_2$ are uniformly chosen generators such that $e(g_1, g_2) = g_t$.
+\item $\groupgen,\groupgen_2$ are uniformly chosen generators such that $e(\groupgen, \groupgen_2) = \groupgen_t$.
 \end{itemize}
 We usually let the $\lambda$ parameter be implicit, i.e.\ write \F instead of $\F(\lambda)$.
-We write \G and \Gtwo additively. We use the notations $\enc{x}\defeq x\cdot g_1$ and $\enctwo{x}\defeq x\cdot g_2$.
+We write \G and \Gtwo additively. We use the notations $\enc{x}\defeq x\cdot \groupgen$ and $\enctwo{x}\defeq x\cdot \groupgen_2$.
 
 \paragraph{Vectors and polynomials}
 We work with integer parameter $n$ that we'll assume throughout the paper  is of the form
