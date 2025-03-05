@@ -619,22 +619,22 @@ As opposed to previous methods, the proof size and prover time remain constant \
 \subsection{Our results}
     Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini\cite{gemini} and \zeromorph\cite{zeromorph}, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost to perform univariate polynomial multiplication via FFT's.
     We propose a new protocol that goes beyond this tradeoff: \mercury has constant proof size and only $O(n)$ prover operations (in addition to the $O(\lambda n/(\log(\lambda n))$ operations for muti-scalar multiplications arising in KZG commitments).
-    It is also concretely more efficient than existing schemes in terms of the required scalar multiplications, as can be seen in table $1$. 
+    It is also concretely more efficient than existing schemes with similar verifier complexity\footnote{The \mlpcs from \cite{kzh} requires only $O(\sqrt{n})$ scalar multiplications for constructing an opening proof. However, it is at the price of $O(\log n)$ verifier pairings whereas all schemes in table $1$ require only two.}in terms of the required scalar multiplications, as can be seen in table $1$. 
 
 
 
 \begin{table}[!htbp]\label{table:comparison}
-	\caption{ Comparison of pairing-based \mlpcs. \G denotes a scalar multiplication. All verifiers below additionally require two pairings. Proof size is measured in \F-elements, although all proofs also contain \G-elements.}
+	\caption{ Comparison of pairing-based \mlpcs. \G denotes a scalar multiplication. All verifiers below additionally require two pairings. Proof size is measured in elements of \F, and uses the fact that a \G-element is encoded by two \F-elements.}
 	\centering
 % \begin{adjustbox}{width=1\textwidth}
 	\begin{tabular}{l|l|l|l}
 	\thead{Scheme} & \thead{Proof size} & \thead{Prover Work} & \thead{Verifier Work}  \\ \hline
 		univariate-based e.g.\cite{logupgkr}
-		        & $O(1)$ \F &        $O(n\log n)$ \F,$O(n)$ \G  & $O(\log n)$ \F,   $O(1)$ \G   \\ \hline
-		\gemini\cite{gemini} & $O(\log n)$ \F &  $O(n)$ \F, $3n$ \G     &    $O(\log n)$ \F, $O(\log n)$ \G \\ \hline
+		        & $O(1)$ &        $O(n\log n)$ \F,$O(n)$ \G  & $O(\log n)$ \F,   $O(1)$ \G   \\ \hline
+		\gemini\cite{gemini} & $O(\log n)$ &  $O(n)$ \F, $3n$ \G     &    $O(\log n)$ \F, $O(\log n)$ \G \\ \hline
 		
-		\zeromorph\cite{zeromorph} & $O(\log n)$ \F             & $O(n)$ \F, $2.5n$ \G   &  $O(\log n)$ \F, $O(\log n)$ \G         \\ \hline
-		\mercury (this work)       & $O(1)$ \F   & $O(n)$ \F, $2n+ O(\sqrt n)$ \G     & $O(\log n)$ \F, $O(1)$ \G          \\ \hline
+		\zeromorph\cite{zeromorph} & $O(\log n)$ & $O(n)$ \F, $2.5n$ \G   &  $O(\log n)$ \F, $O(\log n)$ \G         \\ \hline
+		\mercury (this work)       & $O(1)$ & $O(n)$ \F, $2n+ O(\sqrt n)$ \G     & $O(\log n)$ \F, $O(1)$ \G          \\ \hline
 	\end{tabular}
 % \end{adjustbox}
 \label{table:prover-work}
@@ -1122,7 +1122,8 @@ Thus, we have
 \[\mle{f}(u) = \sumi{b}\sumj{b}\eq(i,u_1)\eq(j,u_2) f_{i,j} = \sumj{b}\eq(j,u_2) \sumi{b}\eq(i,u_1) f_{i,j} \]
 \[=\sumj{b} \eq(j,u_2) h_j = \mle{h}(u_2) = v.\]
 
-
+\section*{Acknowledgements}
+We thank Benedikt B{\"{u}}nz for comments.
 \bibliographystyle{alpha}
 \bibliography{references}
 \end{document}
