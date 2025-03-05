@@ -619,7 +619,7 @@ As opposed to previous methods, the proof size and prover time remain constant \
 \subsection{Our results}
     Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini\cite{gemini} and \zeromorph\cite{zeromorph}, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost to perform univariate polynomial multiplication via FFT's.
     We propose a new protocol that goes beyond this tradeoff: \mercury has constant proof size and only $O(n)$ prover operations (in addition to the $O(\lambda n/(\log(\lambda n))$ operations for muti-scalar multiplications arising in KZG commitments).
-    It is also concretely more efficient than existing schemes with similar verifier complexity\footnote{The \mlpcs from \cite{kzh} requires only $O(\sqrt{n})$ scalar multiplications for constructing an opening proof. However, it is at the price of $O(\log n)$ verifier pairings whereas all schemes in table $1$ require only two.}in terms of the required scalar multiplications, as can be seen in table $1$. 
+    It is also concretely more efficient than existing schemes with similar verifier complexity\footnote{The \mlpcs from \cite{kzh} requires only $O(\sqrt{n})$ scalar multiplications. However, it requires $O(\log n)$ proof length and $O(\log n)$ verifier pairings whereas all schemes in table $1$ require only two.}in terms of the required scalar multiplications, as can be seen in table $1$. 
 
 
 
@@ -775,7 +775,7 @@ With this overloading, given $w_1,w_2,u_1,u_2\in \B{t}$ we have the convenient d
 
 \subsection{The algebraic group model}\label{subsec:agm}
 We introduce some terminology from \cite{plonk} to capture analysis in the Algebraic Group Model of Fuchsbauer, Kiltz and Loss\cite{AGM}.
-
+In this subsection, we use the notation $\G_1=\G$.
 In our protocols, by an \emph{algebraic adversary} \adv in an SRS-based protocol we mean a \poly-time algorithm which satisfies the following.
 \begin{itemize}
  \item For $i\in \set{1,2}$, whenever \adv outputs an element $A\in \Gi$, it also outputs a vector $v$ over \F such that $A = <v,\srsi>$.
@@ -783,12 +783,12 @@ In our protocols, by an \emph{algebraic adversary} \adv in an SRS-based protocol
 
 First we say our \srs \emph{has degree $Q$} if all elements of \srsi are of the form  \enci{f(x)} for $f\in \polysofdeg{Q+1}$ and uniform $x\in \F$. In the following discussion let us assume we are executing a protocol with a degree $Q$ SRS, and denote by $f_{i,j}$ the corresponding polynomial for the $j$'th element of \srsi.
 
-Denote by $a,b$ the vectors of $\F$-elements whose encodings in $\G1,\G2$ an algebraic adversary \adv outputs during a protocol execution; e.g., the $j$'th $\G1$ element output by \adv is \enc{a_j}.
+Denote by $a,b$ the vectors of $\F$-elements whose encodings in $\G_1,\G_2$ an algebraic adversary \adv outputs during a protocol execution; e.g., the $j$'th $\G_1$ element output by \adv is \enc{a_j}.
 
 By a ``real pairing check'' we mean a check of the form
 \[(a\cdot T_1) \cdot (T_2\cdot b)=0\]
 for some matrices $T_1,T_2$ over $\F$.
-Note that such a check can indeed be done efficiently given the encoded elements and the pairing function $e:\G1\times \G2\to \Gt$.
+Note that such a check can indeed be done efficiently given the encoded elements and the pairing function $e:\G_1\times \G_2\to \Gt$.
 
 
 
@@ -803,7 +803,7 @@ The following lemma is inspired by \cite{AGM}'s analysis of \cite{Groth16},
 and tells us that for soundness analysis against algebraic adversaries it suffices to look at ideal checks.
 Before stating the lemma we define the $Q$-DLOG assumption similarly to \cite{AGM}.
 \begin{dfn}\label{ref:qdlog}
- Fix integer $Q$. The \emph{$Q$-DLOG assumption for $(\G1,\G2)$} states that given 
+ Fix integer $Q$. The \emph{$Q$-DLOG assumption for $(\G_1,\G_2)$} states that given 
  \[\enc{1},\enc{x},\ldots,\enc{x^Q},\enctwo{1},\enctwo{x},\ldots,\enctwo{x^Q}\]
  for uniformly chosen $x\in \F$, the probability of an efficient \adv outputting $x$
  is \negl.
@@ -812,7 +812,7 @@ Before stating the lemma we define the $Q$-DLOG assumption similarly to \cite{AG
 
 
 \begin{lemma}\label{lem:AGManalysis}
-Assume the $Q$-DLOG for $(\G1,\G2)$.
+Assume the $Q$-DLOG for $(\G_1,\G_2)$.
  Given an algebraic adversary \adv participating in a protocol with a degree $Q$ SRS,
  the probability of any real pairing check passing is larger by at most an additive \negl factor than the probability the corresponding ideal check holds.
 \end{lemma}
@@ -829,7 +829,7 @@ We give a formal definition of an \mlpcs secure in the algebraic group model.
 \begin{dfn}\label{dfn:mlpcs}
 Let $n=2^s$.  A multilinear polynomial commitment scheme (ml-PCS) consists of 
 \begin{itemize}
- \item $\gen(n)$ -  a randomized algorithm that outputs an SRS \srs0.
+ \item $\gen(n)$ -  a randomized algorithm that outputs an SRS \srs.
  \item $\com(f,\srs)$ - that given a polynomial $f\in \F^n$ returns a commitment \cm to $f$.
  \item A public coin protocol  $\open(\cm,n,u,v)$ between parties \prv and \ver. \prv is given $ f\in \F^n$. \prv and \ver are both given integer $n$, \cm - the purported commitment to $f$, $u\in \F^s$ and $v\in \F$ - the purported value $\mle{f}(u)$.
 \end{itemize}
