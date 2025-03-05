@@ -911,7 +911,7 @@ which can hold for at most one $\gamma$ when $(v_1,v_2)\neq (v'_1,v'_2)$.
 \end{proof}
 
 \subsection{Multilinear evaluations as inner products of univariate polynomials.}
-For $u\in \B{t}$ define the polynomial $\eqpol{u} (X)\defeq  \sumi{b}\eq(i,u)X^i$. 
+For $u\in \F^{t}$ define the polynomial $\eqpol{u} (X)\defeq  \sumi{b}\eq(i,u)X^i$. 
 Note that for $g(X)\in \polysofdeg{b}$, we have
 \[<\eqpol{u},g>=\sumi{b}\eq(i,u) g_i = \mle{g}(u).\]
 
@@ -999,7 +999,7 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
 \begin{enumerate}
  \item \textsf{Committing to partial sums:} \ 
 \begin{enumerate}
-\item Let $u=(u_1,u_2)$ for $u_1,u_2 \in \B{t}$. \prv computes the polynomial $h(X)\defeq \sumi{b}\eq(i,u_1) f_i(X)$. Note that the coefficient of $X^j$ in $h(X)$ is $\sumi{b}\eq(i,u_1) f_{i,j}$ - hence we think of it as a commitment to partial sums. 
+\item Let $u=(u_1,u_2)$ for $u_1,u_2 \in \F^{t}$. \prv computes the polynomial $h(X)\defeq \sumi{b}\eq(i,u_1) f_i(X)$. Note that the coefficient of $X^j$ in $h(X)$ is $\sumi{b}\eq(i,u_1) f_{i,j}$ - hence we think of it as a commitment to partial sums. 
  \item \prv computes and sends $\h\defeq\enc{h(x)}$.
  
  \end{enumerate}
@@ -1024,7 +1024,7 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
 \item  \textsf{KZG evaluations:} 
 \begin{enumerate}
 \item  \ver sends a random evaluation challenge $\zeta \in \F$.
-\item \prv sends the values $ \gzeta \defeq g(\zeta), \ginv \defeq g(1/\zeta), \hzeta \defeq h(\zeta), \hinv \defeq h(1/\zeta), \halpha\defeq h(\alpha),\szeta \defeq S(\zeta),\sinv\defeq S(1/\zeta)$.\label{step:evals}
+\item \prv sends the values $ \gzeta \defeq g(\zeta), \ginv \defeq g(1/\zeta), \hzeta \defeq h(\zeta), \hinv \defeq h(1/\zeta), \szeta \defeq S(\zeta),\sinv\defeq S(1/\zeta)$.\label{step:evals}
 \item\label{step:computevals} \ver computes the expected values for $D(\zeta)$ and $h(\alpha)$ assuming the equations in steps \ref{step:sendS},\ref{step:sendD} are satisfied. That is,  $\dzeta\defeq  \zeta^{b-1} \ginv$, and 
 \[\halpha\defeq \left(\gzeta \eqpol{u_1}(1/\zeta) + \ginv \eqpol{u_1}(\zeta) + \gamma(\hzeta \eqpol{u_2}(1/\zeta) + \hinv \eqpol{u_2}(\zeta)-2v) - \zeta \szeta - (1/\zeta)\sinv\right)/2.\]
 % \item \ver sends a random KZG batching challenge $\eta\in \F$.
@@ -1123,7 +1123,7 @@ Thus, we have
 \[=\sumj{b} \eq(j,u_2) h_j = \mle{h}(u_2) = v.\]
 
 \section*{Acknowledgements}
-We thank Benedikt B{\"{u}}nz for comments.
+We thank Benedikt B{\"{u}}nz and Tohru Kohrita for comments and corrections.
 \bibliographystyle{alpha}
 \bibliography{references}
 \end{document}
