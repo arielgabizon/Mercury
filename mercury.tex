@@ -92,6 +92,7 @@
 \newcommand{\gemini}{\ensuremath{\mathsf{gemini}}\xspace}
 \newcommand{\zeromorph}{\ensuremath{\mathsf{zeromorph}}\xspace}
 \newcommand{\mercury}{\ensuremath{\mathpgoth{MERCURY} }\xspace}
+\newcommand{\samaritan}{\ensuremath{\mathsf{Samaritan} }\xspace}
 \newcommand{\cq}{\ensuremath{\mathpgoth{cq}}\xspace}
 \newcommand{\cqlin}{\ensuremath{\mathpgoth{cq}\mathscr{\text{\calligra{lin}}}}\xspace}
 \newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}}}}\xspace}
@@ -639,6 +640,8 @@ As opposed to previous methods, the proof size and prover time remain constant \
 % \end{adjustbox}
 \label{table:prover-work}
 \end{table} 
+\paragraph{Concurrent work}
+Samaritan\cite{samaritan} presents a similar construction.
 
 \section{Overview of technique}
 % \begin{remark}
@@ -707,16 +710,9 @@ We can use standard univariate KZG to open $\cm_t$ at $\alpha$.
 And, crucially, we can afford to evaluate $\mle{g}(u_1)$ using the aforementioned univariate protocols as it is of size $b$ rather than $n$.
 In summary, we can show a committed polynomial corresponds to the correct restriction. And now, again, we can afford to open $h$ as a multilinear at $u_2$ using univariate protocols
 as it has size $n/b$ rather than $n$.
-\paragraph{Comparison to sumcheck}
-It is instructive to see what  happens if we try to get a similar result via a modification of the sumcheck protocol \cite{lfkn}.
-Note first that a multilinear evaluation can indeed   be written as a sum over the function's values on \B{s} multiplied by the \eq function:
-$$ M(u) = \sum_{b \in \B{s}} \eq(b, u) M(b). $$
-
-
-The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. In the above spirit, we could look at a modified sumcheck protocol, where the first variable ranges over a domain of super-constant size $b$. The first round univariate $P_1$ would thus have degree roughly $2b$. 
-To maintain constant proof length, we could send a commitment to $P_1$ rather than its coefficients (as usually done in sumcheck).
-However, \emph{computing} $P_1$ would require superlinear time  $O(n \log b)$ - as we need to perform a $b$-size FFT for $n/b$ values of the second variable appearing in the sum. 
-
+\begin{remark}
+In hindsight, partially due to concurrent work\cite{samaritan}, we realized our protocol can be viewed as a sumcheck protocol\cite{lfkn} optimized for the \mlpcs setting. Some details on this viewpoint are given in Appendix \ref{subsec:sumcheck}.
+\end{remark}
 
 \section{Preliminaries}
 \subsection{Terminology and conventions}\label{sec:terminology}
@@ -910,7 +906,7 @@ To satisfy the equation in the claim for some $S$, we need
 which can hold for at most one $\gamma$ when $(v_1,v_2)\neq (v'_1,v'_2)$.
 \end{proof}
 
-\subsection{Multilinear evaluations as inner products of univariate polynomials.}
+\subsection{Multilinear evaluations as inner products of univariate polynomials.}\label{sec:eq-polys}
 For $u\in \F^{t}$ define the polynomial $\eqpol{u} (X)\defeq  \sumi{b}\eq(i,u)X^i$. 
 Note that for $g(X)\in \polysofdeg{b}$, we have
 \[<\eqpol{u},g>=\sumi{b}\eq(i,u) g_i = \mle{g}(u).\]
@@ -1126,5 +1122,29 @@ Thus, we have
 We thank Benedikt B{\"{u}}nz and Tohru Kohrita for comments and corrections.
 \bibliographystyle{alpha}
 \bibliography{references}
+\appendix
+\section{A sumcheck perspective on \mercury}\label{subsec:sumcheck}
+We sketch how one could arrive at a similar protocol by modifying the sumcheck protocol \cite{lfkn}.
+
+A multilinear evaluation can be written as a sum over the function's values on \B{s} multiplied by the \eq function:
+$$ M(u) = \sum_{x \in \B{s}} \eq(x, u) M(x). $$
+
+The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. Let $b=\sqrt{n}$. We look instead at a modified sumcheck protocol on a bivariate function, where each variable ranges over a domain of size $b$.
+% The first round univariate $P(X)$ would thus have degree roughly $2b$. 
+To maintain constant proof size and linear prover time, we need to resolve three issues.
+\begin{enumerate}
+\item The first univariate $s_1(X)$ has the form $s_1(X)=\sumi{b} \eqpol{u_1}(X) f(X,i)$ where $\eqpol{u_1}(X)$ represents the function $\eq(u_1,X)$ (see Section \ref{sec:eq-polys}). The standard way to compute $s_1$ is by first computing $\eqpol{u_1}(X) f(X,i)$ for each $0\leq i <b$, and summing the results. This requires a $b$-size $FFT$ for each of the $b$ coordinates giving superlinear time $O(n\log b)$ in total. However, as \eqpol{u_1} depends only on $X$ we can simply compute the polynomial $\sumi{b} f(X,i)$, not requiring these FFTs, and multiply it in the end by \eqpol{u_1}, computing $s_1(X)$ in $O(n)$ time in total. In other words, when we are doing sumcheck over a product with a tensor vector like  \eq, computing $s_1$ can be done in linear time even when the domain is super-constant.
+ \item We can't send $s_1$'s coefficients as usually done in sumcheck while maintaining constant proof length. This can be resolved by sending a KZG commitment to $s_1$ instead of its
+ coefficients.\footnote{We note that a bivariate sumcheck over large variable domains was handled similarly in \cite{BCGRS}.}
+ \item The sumcheck verifier \ver needs to check the sum of $s_1$'s values on the first variable's domain is $v$. \ver can't do this check  directly from the commitment. This can be resolved by a univariate sumcheck subprotocol. A technical note is that \mercury uses the polynomial $h$ which actually matches $s_1/\eqpol{u_1}$. That is why an inner product subprotocol is needed (to take the inner product with \eqpol{u_1}) rather than merely a univariate sumcheck.
+
+\end{enumerate}
+
+
+
+ Finally, $f(X,Y)$ as a bivariate needs to be opened at the sumcheck challenge $(r_1,r_2)$. Thus, we need a bivariate PCS.  It turns out we have implicitly used in \mercury (a variant of) the bivariate PCS from \cite{samaritan} based on \cite{caulk}.
+Specifically, $g(\zeta)$ in our main protocol in Section \ref{sec:main} is the evaluation 
+$F(\zeta,\alpha)$; where $F(X,Y)$ is the bivariate polynomial such that our $f(X)$ is $F(X,X^b)$.
+
 \end{document}
 
