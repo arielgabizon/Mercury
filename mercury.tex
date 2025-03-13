@@ -620,7 +620,7 @@ As opposed to previous methods, the proof size and prover time remain constant \
 \subsection{Our results}
     Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini\cite{gemini} and \zeromorph\cite{zeromorph}, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost to perform univariate polynomial multiplication via FFT's.
     We propose a new protocol that goes beyond this tradeoff: \mercury has constant proof size and only $O(n)$ prover operations (in addition to the $O(\lambda n/(\log(\lambda n))$ operations for muti-scalar multiplications arising in KZG commitments).
-    It is also concretely more efficient than existing schemes with similar verifier complexity\footnote{The \mlpcs from \cite{kzh} requires only $O(\sqrt{n})$ scalar multiplications. However, it requires $O(\log n)$ proof length and $O(\log n)$ verifier pairings whereas all schemes in table $1$ require only two.}in terms of the required scalar multiplications, as can be seen in table $1$. 
+    It is also concretely more efficient than existing schemes with similar verifier complexity\footnote{The \mlpcs from \cite{kzh} requires only $O(\sqrt{n})$ scalar multiplications. However, it requires $O(\log n)$ proof length and $O(\log n)$ verifier pairings whereas all schemes in table $1$ require only two. Moreover, committing to polynomials still requires $O(n)$ scalar multiplications and in most cases (with the exception of preprocessed polynomials) we need to do both in a SNARK proof.}in terms of the required scalar multiplications, as can be seen in table $1$. 
 
 
 
@@ -743,8 +743,8 @@ Given $g\in \F^b$ we denote $g(X)\defeq \sum_{0\leq i < b} g_i X^i$.
 We make the convention that integer ranges in sums begin at zero if not specified otherwise. Thus, we write
 $g(X)=\sumi{b}g_i X^i$.
 
-We assume vectors of size $n$ are indexed by two indices ranging over $\set{0,\ldots,b-1}$. Thus, for $f\in \F^n$, we have $f=(f_{0,0},\ldots,f_{0,b-1},\ldots,f_{b-1,0},\ldots,f_{b-1,b-1})$.
- For $0\leq i <b$, we denote by $f_i$ the vector $(f_{0,i},\ldots, f_{b-1,i})$.
+We assume vectors of size $n$ are indexed by two indices ranging over $\set{0,\ldots,b-1}$. It will be convenient to think, non-standardly, of the first index as the least significant digit. Thus, for $f\in \F^n$, we have $f=(f_{0,0},\ldots,f_{b-1,0},\ldots,f_{0,b-1},\ldots,f_{b-1,b-1})$.
+ For $0\leq i <b$, we denote by $f_i$ the vector $(f_{i,0},\ldots, f_{i,b-1})$.
 
 In particular, for $f\in \F^n$ we have under these notations that
 \[f(X)\defeq \sumi{b}X^i f_i(X^b) = \sumi{b}\sumj{b}f_{i,j}X^{i+j\cdot b}\]
@@ -1119,7 +1119,7 @@ Thus, we have
 \[=\sumj{b} \eq(j,u_2) h_j = \mle{h}(u_2) = v.\]
 
 \section*{Acknowledgements}
-We thank Benedikt B{\"{u}}nz and Tohru Kohrita for comments and corrections.
+We thank Benedikt B{\"{u}}nz, Tohru Kohrita and Justin Thaler for comments and corrections.
 \bibliographystyle{alpha}
 \bibliography{references}
 \appendix
@@ -1135,7 +1135,7 @@ To maintain constant proof size and linear prover time, we need to resolve three
 \begin{enumerate}
 \item The first univariate $s_1(X)$ has the form $s_1(X)=\sumi{b} \eqpol{u_1}(X)\eqpol{u_2}(i) F(X,i)$ (see Section \ref{sec:eq-polys} for definition of \eqpol{u}). The standard way to compute $s_1$ is by first computing $\eqpol{u_1}(X) \eqpol{u_2}(i) F(X,i)$ for each $0\leq i <b$, and summing the results. This requires a $b$-size $FFT$ for each of the $b$ coordinates giving superlinear time $O(n\log b)$ in total. However, as \eqpol{u_1} depends only on $X$ we can simply compute\footnote{This optimization for computing $s_1(X)$ originates from \cite{gruensumcheck}. See also \cite{thalersumcheck} for a more in-depth study of optimizing sumchecks involving the \eq function.} the polynomial $\sumi{b} \eqpol{u_2}(i)F(X,i)$, not requiring these FFTs, and multiply it in the end by $\eqpol{u_1}(X)$, computing $s_1(X)$ in $O(n)$ time in total. In other words, when we are doing sumcheck over a product with a tensor vector like  \eq, computing $s_1$ can be done in linear time even when the domain is super-constant.
  \item We can't send $s_1$'s coefficients as usually done in sumcheck while maintaining constant proof length. This can be resolved by sending a KZG commitment to $s_1$ instead of its
- coefficients.\footnote{We note that a bivariate sumcheck over large variable domains was handled similarly in \cite{BCGRS}.}
+ coefficients.\footnote{A bivariate sumcheck over large variable domains was handled similarly in \cite{BCGRS}.}
  \item The sumcheck verifier \ver needs to check the sum of $s_1$'s values on the first variable's domain is $v$. \ver can't do this check  directly from the commitment. This can be resolved by a univariate sumcheck subprotocol. A technical note is that \mercury uses the polynomial $h$ which actually matches $s_1/\eqpol{u_1}$. That is why an inner product subprotocol is needed (to take the inner product with \eqpol{u_1}) rather than merely a univariate sumcheck.
 
 \end{enumerate}
