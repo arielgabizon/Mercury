@@ -712,7 +712,7 @@ And, crucially, we can afford to evaluate $\mle{g}(u_1)$ using the aforementione
 In summary, we can show a committed polynomial corresponds to the correct restriction. And now, again, we can afford to open $h$ as a multilinear at $u_2$ using univariate protocols
 as it has size $n/b$ rather than $n$.
 \begin{remark}
-In hindsight, partially due to concurrent work\cite{samaritan}, we realized our protocol can be viewed as a sumcheck protocol\cite{lfkn} optimized for the \mlpcs setting. Some details on this viewpoint are given in Appendix \ref{subsec:sumcheck}.
+\mercury bares resemblance to a bivariate sumcheck protocol\cite{lfkn}; however the correspondence is not perfect. We explore this in Appendix \ref{subsec:sumcheck}
 \end{remark}
 
 \section{Preliminaries}
@@ -994,9 +994,13 @@ Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\e
 \noindent
 \underline{$\open(n,\cm,u,v;f)$:} \\ \noindent
 \begin{enumerate}
- \item \textsf{Committing to partial sums:} \ 
+ \item \textsf{Committing to restricted function:} \ 
 \begin{enumerate}
-\item Let $u=(u_1,u_2)$ for $u_1,u_2 \in \F^{t}$. \prv computes the polynomial $h(X)\defeq \sumi{b}\eq(i,u_1) f_i(X)$. Note that the coefficient of $X^j$ in $h(X)$ is $\sumi{b}\eq(i,u_1) f_{i,j}$ - hence we think of it as a commitment to partial sums. 
+\item Let $u=(u_1,u_2)$ for $u_1,u_2 \in \F^{t}$. \prv computes the polynomial $h(X)\defeq \sumi{b}\eq(i,u_1) f_i(X)$. \\ \noindent
+% \begin{remark}
+\emph{The coefficient of $X^j$ in $h(X)$ is $\sumi{b}\eq(i,u_1) f_{i,j}=\mle{f}(u_1,j)$ when interpreting $j$ as its binary representation on the RHS.
+Hence, we can think of $h$ as a commitment to the restricted multilinear $\mle{f}(u_1,X_0,\ldots,X_{t-1})$.}
+% \end{remark}
  \item \prv computes and sends $\h\defeq\enc{h(x)}$.
  
  \end{enumerate}
@@ -1132,20 +1136,20 @@ $$ M(u) = \sum_{x \in \B{s}} \eq(x, u) M(x). $$
 
 The classic sumcheck protocol, like \gemini, works by $\log n$ reductions of the domain size by a factor of two; each round fixing one more variable of the summed function. Let $b=\sqrt{n}$. We look instead at a modified sumcheck protocol on a bivariate function, where each variable ranges over a domain of size $b$.
 % The first round univariate $P(X)$ would thus have degree roughly $2b$. 
-To maintain constant proof size and linear prover time, we need to resolve three issues.
+To maintain constant proof size and linear prover time, we need to resolve several issues.
 \begin{enumerate}
 \item The first univariate $s_1(X)$ has the form $s_1(X)=\sumi{b} \eqpol{u_1}(X)\eqpol{u_2}(i) F(X,i)$ (see Section \ref{sec:eq-polys} for definition of \eqpol{u}). The standard way to compute $s_1$ is by first computing $\eqpol{u_1}(X) \eqpol{u_2}(i) F(X,i)$ for each $0\leq i <b$, and summing the results. This requires a $b$-size $FFT$ for each of the $b$ coordinates giving superlinear time $O(n\log b)$ in total. However, as \eqpol{u_1} depends only on $X$ we can simply compute\footnote{This optimization for computing $s_1(X)$ originates from \cite{gruensumcheck}. See also \cite{thalersumcheck} for a more in-depth study of optimizing sumchecks involving the \eq function.} the polynomial $\sumi{b} \eqpol{u_2}(i)F(X,i)$, not requiring these FFTs, and multiply it in the end by $\eqpol{u_1}(X)$, computing $s_1(X)$ in $O(n)$ time in total. In other words, when we are doing sumcheck over a product with a tensor vector like  \eq, computing $s_1$ can be done in linear time even when the domain is super-constant.
  \item We can't send $s_1$'s coefficients as usually done in sumcheck while maintaining constant proof length. This can be resolved by sending a KZG commitment to $s_1$ instead of its
  coefficients.\footnote{A bivariate sumcheck over large variable domains was handled similarly in \cite{BCGRS}.}
- \item The sumcheck verifier \ver needs to check the sum of $s_1$'s values on the first variable's domain is $v$. \ver can't do this check  directly from the commitment. This can be resolved by a univariate sumcheck subprotocol. A technical note is that \mercury uses the polynomial $h$ which actually matches $s_1/\eqpol{u_1}$. That is why an inner product subprotocol is needed (to take the inner product with \eqpol{u_1}) rather than merely a univariate sumcheck.
+ \item The sumcheck verifier \ver needs to check the sum of $s_1$'s values on the first variable's domain is $v$. \ver can't do this check  directly from the commitment. This can be resolved by a univariate sumcheck subprotocol. A technical note is that \mercury uses the polynomial $h$ which actually corresponds to $s_1/\eqpol{u_1}$. That is why an inner product subprotocol is needed (to take the inner product with \eqpol{u_1}) rather than merely a univariate sumcheck.
 
+\item Finally, $F(X,Y)$ as a bivariate needs to be opened at the sumcheck challenge $(r_1,r_2)$. Thus, we need a bivariate PCS.  It turns out we have implicitly used a variant of the bivariate PCS from \cite{samaritan} based on \cite{caulk}.
+Specifically, $g(\zeta)$ in our main protocol in Section \ref{sec:main} is the evaluation 
+$F(\zeta,\alpha)$; where $F(X,Y)$ is the bivariate polynomial such that our $f(X)$ is $F(X,X^b)$. Here, in fact, there is a missing technical component to make the sumcheck route give a similar result. We need a bivariate PCS where one can both commit and open the polynomial in linear time given its values, rather than its coefficients as the case in \cite{caulk, samaritan}.
 \end{enumerate}
 
-
-
- Finally, $F(X,Y)$ as a bivariate needs to be opened at the sumcheck challenge $(r_1,r_2)$. Thus, we need a bivariate PCS.  It turns out we have implicitly used a variant of the bivariate PCS from \cite{samaritan} based on \cite{caulk}.
-Specifically, $g(\zeta)$ in our main protocol in Section \ref{sec:main} is the evaluation 
-$F(\zeta,\alpha)$; where $F(X,Y)$ is the bivariate polynomial such that our $f(X)$ is $F(X,X^b)$.
-
+\paragraph{Is \mercury a sumcheck?}
+The main reason \mercury is \emph{not} precisely an instance of the sumcheck protocol is that it ``mixes'' the monomial and Lagrange base.
+In a sumcheck, we check $s_1$'s \emph{values} over the domain sum to the expected final value, and then evaluate $s_1(X)$ at a random $\alpha$ to connect it to the next univariate $s_2$. In \mercury we are doing the first check over the monomial coefficients of $s_1(X)$ rather than its values (via the inner product argument between $h$ and $P_{u_1}$); but still  evaluate $h(X)$ to connect it to $g(X)$ which roughly corresponds to $s_2(X)$ in a sumcheck. 
 \end{document}
 
