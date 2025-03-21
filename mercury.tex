@@ -712,7 +712,7 @@ And, crucially, we can afford to evaluate $\mle{g}(u_1)$ using the aforementione
 In summary, we can show a committed polynomial corresponds to the correct restriction. And now, again, we can afford to open $h$ as a multilinear at $u_2$ using univariate protocols
 as it has size $n/b$ rather than $n$.
 \begin{remark}
-\mercury bares resemblance to a bivariate sumcheck protocol\cite{lfkn}; however the correspondence is not perfect. We explore this in Appendix \ref{subsec:sumcheck}
+\mercury bares resemblance to a bivariate sumcheck protocol\cite{lfkn}; however the correspondence is not perfect. We explore this in Appendix \ref{subsec:sumcheck}.
 \end{remark}
 
 \section{Preliminaries}
@@ -1129,7 +1129,7 @@ We thank Benedikt B{\"{u}}nz, Tohru Kohrita and Justin Thaler for comments and c
 \bibliography{references}
 \appendix
 \section{A sumcheck perspective on \mercury}\label{subsec:sumcheck}
-We sketch how one could arrive at a similar protocol by modifying the sumcheck protocol \cite{lfkn}.
+We sketch how one could attempt to construct a similar protocol by modifying the sumcheck protocol \cite{lfkn}.
 
 A multilinear evaluation can be written as a sum over the function's values on \B{s} multiplied by the \eq function:
 $$ M(u) = \sum_{x \in \B{s}} \eq(x, u) M(x). $$
@@ -1150,6 +1150,6 @@ $F(\zeta,\alpha)$; where $F(X,Y)$ is the bivariate polynomial such that our $f(X
 
 \paragraph{Is \mercury a sumcheck?}
 The main reason \mercury is \emph{not} precisely an instance of the sumcheck protocol is that it ``mixes'' the monomial and Lagrange base.
-In a sumcheck, we check $s_1$'s \emph{values} over the domain sum to the expected final value, and then evaluate $s_1(X)$ at a random $\alpha$ to connect it to the next univariate $s_2$. In \mercury we are doing the first check over the monomial coefficients of $s_1(X)$ rather than its values (via the inner product argument between $h$ and $P_{u_1}$); but still  evaluate $h(X)$ to connect it to $g(X)$ which roughly corresponds to $s_2(X)$ in a sumcheck. 
+In a sumcheck, we check $s_1$'s \emph{values} over the domain sum to the expected final value, and then evaluate $s_1(X)$ at a random $\alpha$ to connect it to the next univariate $s_2$.  We are doing the first check over the monomial coefficients of $s_1(X)$ rather than its values (via the inner product argument between $h$ and $P_{u_1}$); but still  evaluate $h(X)$ to connect it to $g(X)$ which roughly corresponds to $s_2(X)$ in a sumcheck. 
 \end{document}
 
