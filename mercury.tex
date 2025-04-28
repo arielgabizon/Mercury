@@ -863,7 +863,7 @@ The basic observation is that  $<g_1,g_2>$ is the constant coefficient of the ra
 $R(X)\defeq g_1(X) g_2(1/X)$.
 Thus, $<g_1,g_2>=v$ is equivalent to the existence of polynomials $S_1(X),S_2(X)$ such that
 \[g_1(X) g_2(1/X)=1/X\cdot S_1(1/X) + v + X\cdot S_2(X).\] 
-We can thus sends commitments to $S_1,S_2$ as proof of the correctness of $v$.
+We can thus send commitments to $S_1,S_2$ as proof of the correctness of $v$.
 As an optimization, we observe that we can ``symmetrize'' $R$ and look instead at the rational function
 
 \[R'(X)\defeq g_1(X) g_2(1/X)+g_1(1/X) g_2(X).\]
@@ -887,10 +887,6 @@ FFT to get the coefficients $c_0,\ldots,c_{2b-2}$ of the LHS. Now, we can output
 
 Suppose we now have two  inner product claims  $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
 The following claim gives us a way to randomly batch them so that one polynomial $S(X)$ suffices to prove both.
-% \begin{enumerate}
-%  \item 
-% \ver  chooses random $\gamma \in \F$
-% \item \prv sends $S\in \polys$ such that 
 \begin{claim}\label{claim:batchipa}
  Fix polynomials $g_1,g_2,h_1,h_2\in \polys$ and $v_1,v_2\in \F$.
  Suppose $<g_1,g_2>\neq v_1$ or $<h_1,h_2>\neq v_2$. Then, e.w.p $1/|\F|$ over $\gamma\in \F$
@@ -901,7 +897,7 @@ The following claim gives us a way to randomly batch them so that one polynomial
 \end{claim}
 \begin{proof}
 Denote $(v'_1,v'_2)=(<g_1,g_2>,<h_1,h_2>))$.
- The constant coefficient of the LHS is $v'_1+\gamma v'_2$.
+ The constant coefficient of the LHS is $2(v'_1+\gamma v'_2)$.
 To satisfy the equation in the claim for some $S$, we need
  \[v'_1+\gamma v'_2=v_1+\gamma v_2,\]
 which can hold for at most one $\gamma$ when $(v_1,v_2)\neq (v'_1,v'_2)$.
@@ -955,7 +951,7 @@ This motivates the following protocol.
 Our protocol crucially relies on the following simple claim about division by a polynomial of the form
 $X^b-\alpha$.
 \begin{claim}\label{clm:univariatemod}
- Fix integers $b>0$ and let $n=b^2$. Fix $\alpha\in \F$, and $f(X)\in \polysofdeg{n}$.
+ Fix integer $b>0$ and let $n=b^2$. Fix $\alpha\in \F$, and $f(X)\in \polysofdeg{n}$.
 Let $f_0(X),\ldots,f_{b-1}(X)\in \polysofdeg{b}$ be such that
 $f(X)=\sumi{b}X^i f_i(X^b)$.
  Let $g(X)\in \polysofdeg{b},q(X)\in \polys$ be such that 
@@ -985,7 +981,7 @@ Thus, the coefficients of $q(X)$ are simply the interleaving of the coefficients
 
 \noindent
 \underline{$\gen(n)$:}
-Choose random $x\in \F$ and outputs \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\enctwo{1},\enctwo{x}}\\
+Choose random $x\in \F$ and output \set{\enc{1},\enc{x},\ldots,\enc{x^{n-1}},\enctwo{1},\enctwo{x}}\\
 
 \noindent
 \underline{$\com(n,f,\srs)$:}
@@ -1076,7 +1072,7 @@ $ \gzeta=g(\zeta),\ginv = g(1/\zeta),\hzeta= h(\zeta),\hinv =h(1/\zeta), \szeta=
 $ D(\zeta) = \zeta^{b-1} g(1/\zeta)$,
 \item 
 \[2(h(\alpha)+\gamma v) =  g(\zeta) \eqpol{u_1}(1/\zeta) + g(1/\zeta)\eqpol{u_1}(\zeta) + \gamma(h(\zeta) \eqpol{u_2}(1/\zeta) + h(1/\zeta) \eqpol{u_2}(\zeta)) - \zeta S(\zeta) - (1/\zeta)S(1/\zeta).\]
-\item\label{item:last}$g(\zeta) =  f(\zeta)-(\zeta^b-\alpha)q(\zeta)-g(\zeta).$
+\item\label{item:last}$g(\zeta) =  f(\zeta)-(\zeta^b-\alpha)q(\zeta).$
 
 \end{enumerate}
 Note that items \ref{item:first}-\ref{item:last} can be viewed as rational equations evaluated at $\zeta$.
