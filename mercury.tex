@@ -620,8 +620,8 @@ As opposed to previous methods, the proof size and prover time remain constant \
     
 \subsection{Our results}
     Existing transformations from a univariate PCS to \mlpcs are either linear time but require a logarithmic opening proof size, like \gemini\cite{gemini} and \zeromorph\cite{zeromorph}, or have constant size opening proofs but incur an additional $O(n \log n)$ prover cost to perform univariate polynomial multiplication via FFT's.
-    We propose a new protocol that goes beyond this tradeoff: \mercury has constant proof size and only $O(n)$ prover operations (in addition to the $O(\lambda n/(\log(\lambda n))$ operations for muti-scalar multiplications arising in KZG commitments).
-    It is also concretely more efficient than existing schemes with similar verifier complexity\footnote{The \mlpcs from \cite{kzh} requires only $O(\sqrt{n})$ scalar multiplications. However, it requires $O(\log n)$ proof length and $O(\log n)$ verifier pairings whereas all schemes in table $1$ require only two. Moreover, committing to polynomials still requires $O(n)$ scalar multiplications and in most cases (with the exception of preprocessed polynomials) we need to do both in a SNARK proof.}in terms of the required scalar multiplications, as can be seen in table $1$. 
+    We propose a new protocol that goes beyond this tradeoff: \mercury has constant proof size and only $O(n)$ prover operations (in addition to the $O(\lambda n/(\log(\lambda n))$ operations for multi-scalar multiplications arising in KZG commitments).
+    It is also concretely more efficient than existing schemes with similar verifier complexity\footnote{The \mlpcs from \cite{kzh} requires only $O(\sqrt{n})$ scalar multiplications. However, it requires $O(\log n)$ proof length and $O(\log n)$ verifier pairings whereas all schemes in table $1$ require only two. Moreover, committing to polynomials still requires $O(n)$ scalar multiplications and in most cases (with the exception of preprocessed polynomials) we need to do both in a SNARK proof.} in terms of the required scalar multiplications, as can be seen in table $1$. 
 
 
 
