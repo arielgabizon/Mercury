@@ -855,7 +855,7 @@ such that
 
 \section{Components}\label{sec:components}
 In this section we go over known components (with some new optimizations), that will be used in our main protocol in Section \ref{sec:main}. The treatment will  be  semi-formal, and assume basic familiarity with the KZG polynomial commitment scheme \cite{kzg}. The formal treatment will be part of the description and knowledge soundness proof of the main protocol in Section \ref{sec:main}.
-\subsection{Inner products in $O(b\log b)$ time.}
+\subsection{Inner products in $O(b\log b)$ time}
 Fix polynomials $g_1(X)=\sum_{i=0}^{d_1} a_i X^i,g_2=\sum_{i=0}^{d_2} b_i X^i$ in $\polys$.
 We define $<g_1,g_2>$ to be $\sum_{i=0}^d a_i b_i$ where $d\defeq \min \set{d_1,d_2}$. 
 We present a convenient way to verify inner products $<g_1,g_2>$ similar to \cite{bootle,sonic}.
@@ -903,7 +903,7 @@ To satisfy the equation in the claim for some $S$, we need
 which can hold for at most one $\gamma$ when $(v_1,v_2)\neq (v'_1,v'_2)$.
 \end{proof}
 
-\subsection{Multilinear evaluations as inner products of univariate polynomials.}\label{sec:eq-polys}
+\subsection{Multilinear evaluations as inner products of univariate polynomials}\label{sec:eq-polys}
 For $u\in \F^{t}$ define the polynomial $\eqpol{u} (X)\defeq  \sumi{b}\eq(i,u)X^i$. 
 Note that for $g(X)\in \polysofdeg{b}$, we have
 \[<\eqpol{u},g>=\sumi{b}\eq(i,u) g_i = \mle{g}(u).\]
