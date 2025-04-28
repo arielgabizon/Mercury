@@ -595,6 +595,7 @@
 % \newcommand{\instF}{\ensuremath{\mathrm{x}}\xspace}
 % \newcommand{\witF}{\ensuremath{\mathrm{w}}\xspace}
 \newcommand{\groupgen}{\ensuremath{\shlomomath{g}}\xspace}
+\newcommand{\inprod}[2]{\ensuremath{\left\langle #1,#2 \right \rangle}\xspace}
 \begin{document}
     \maketitle
 \begin{abstract}
@@ -701,7 +702,7 @@ Calculation shows
 \[g(X)= \sum_{0\leq i < b} X^i f_i(\alpha).\]
 % \prv will send $\g\defeq \cm(g)$ and prove its correctness via a quotient.
 The multilinear $\mle{g}$ corresponding to $g(X)$ is 
-\[\mle{g}(X_0,\ldots X_{t-1}) = \sum_{0\leq i < b} \eq(i,X_0,\ldots,X_{t-1})f_i(\alpha).
+\[\mle{g}(X_0,\ldots, X_{t-1}) = \sum_{0\leq i < b} \eq(i,X_0,\ldots,X_{t-1})f_i(\alpha).
 \]
 In particular, we have 
 \[\mle{g}(u_1) = \sum_{0\leq i < b} \eq(i,u_1)f_i(\alpha)=h(\alpha).\]
@@ -775,7 +776,7 @@ We introduce some terminology from \cite{plonk} to capture analysis in the Algeb
 In this subsection, we use the notation $\G_1=\G$.
 In our protocols, by an \emph{algebraic adversary} \adv in an SRS-based protocol we mean a \poly-time algorithm which satisfies the following.
 \begin{itemize}
- \item For $i\in \set{1,2}$, whenever \adv outputs an element $A\in \Gi$, it also outputs a vector $v$ over \F such that $A = <v,\srsi>$.
+ \item For $i\in \set{1,2}$, whenever \adv outputs an element $A\in \Gi$, it also outputs a vector $v$ over \F such that $A = \inprod{v}{\srsi}$.
 \end{itemize}
 
 First we say our \srs \emph{has degree $Q$} if all elements of \srsi are of the form  \enci{f(x)} for $f\in \polysofdeg{Q+1}$ and uniform $x\in \F$. In the following discussion let us assume we are executing a protocol with a degree $Q$ SRS, and denote by $f_{i,j}$ the corresponding polynomial for the $j$'th element of \srsi.
@@ -857,18 +858,18 @@ such that
 In this section we go over known components (with some new optimizations), that will be used in our main protocol in Section \ref{sec:main}. The treatment will  be  semi-formal, and assume basic familiarity with the KZG polynomial commitment scheme \cite{kzg}. The formal treatment will be part of the description and knowledge soundness proof of the main protocol in Section \ref{sec:main}.
 \subsection{Inner products in $O(b\log b)$ time}
 Fix polynomials $g_1(X)=\sum_{i=0}^{d_1} a_i X^i,g_2=\sum_{i=0}^{d_2} b_i X^i$ in $\polys$.
-We define $<g_1,g_2>$ to be $\sum_{i=0}^d a_i b_i$ where $d\defeq \min \set{d_1,d_2}$. 
-We present a convenient way to verify inner products $<g_1,g_2>$ similar to \cite{bootle,sonic}.
-The basic observation is that  $<g_1,g_2>$ is the constant coefficient of the rational function
+We define $\inprod{g_1}{g_2}$ to be $\sum_{i=0}^d a_i b_i$ where $d\defeq \min \set{d_1,d_2}$. 
+We present a convenient way to verify inner products $\inprod{g_1}{g_2}$ similar to \cite{bootle,sonic}.
+The basic observation is that  $\inprod{g_1}{g_2}$ is the constant coefficient of the rational function
 $R(X)\defeq g_1(X) g_2(1/X)$.
-Thus, $<g_1,g_2>=v$ is equivalent to the existence of polynomials $S_1(X),S_2(X)$ such that
+Thus, $\inprod{g_1}{g_2}=v$ is equivalent to the existence of polynomials $S_1(X),S_2(X)$ such that
 \[g_1(X) g_2(1/X)=1/X\cdot S_1(1/X) + v + X\cdot S_2(X).\] 
 We can thus send commitments to $S_1,S_2$ as proof of the correctness of $v$.
 As an optimization, we observe that we can ``symmetrize'' $R$ and look instead at the rational function
 
 \[R'(X)\defeq g_1(X) g_2(1/X)+g_1(1/X) g_2(X).\]
 The advantage of $R'$ is that the negative and positive coefficients are equal. Thus,
-$<g_1,g_2>=v$ is equivalent to the existence of $S(X)\in \polys$ such that
+$\inprod{g_1}{g_2}=v$ is equivalent to the existence of $S(X)\in \polys$ such that
 
 \[ g_1(X) g_2(1/X)+g_1(1/X) g_2(X)=2v + X\cdot S(X) + (1/X)S(1/X).\]
 
@@ -885,18 +886,18 @@ FFT to get the coefficients $c_0,\ldots,c_{2b-2}$ of the LHS. Now, we can output
 
 \paragraph{Batching inner product checks}
 
-Suppose we now have two  inner product claims  $<g_1,g_2>=v_1$ and $<h_1,h_2>=v_2$. 
+Suppose we now have two  inner product claims  $\inprod{g_1}{g_2} =v_1$ and $\inprod{h_1}{h_2}=v_2$. 
 The following claim gives us a way to randomly batch them so that one polynomial $S(X)$ suffices to prove both.
 \begin{claim}\label{claim:batchipa}
  Fix polynomials $g_1,g_2,h_1,h_2\in \polys$ and $v_1,v_2\in \F$.
- Suppose $<g_1,g_2>\neq v_1$ or $<h_1,h_2>\neq v_2$. Then, e.w.p $1/|\F|$ over $\gamma\in \F$
+ Suppose $\inprod{g_1}{g_2}\neq v_1$ or $\inprod{h_1}{h_2}\neq v_2$. Then, e.w.p $1/|\F|$ over $\gamma\in \F$
  there does not exist $S(X)\in\polys$ such that
 \[ g_1(X)g_2(\xinv)+ g_1(\xinv) g_2(X) + \gamma(h_1(X)h_2(\xinv) + h_1(\xinv)h_2(X)) \]
 \[= 2(v_1+\gamma v_2) + X\cdot S(X)+(\xinv)S(\xinv)\]
  
 \end{claim}
 \begin{proof}
-Denote $(v'_1,v'_2)=(<g_1,g_2>,<h_1,h_2>))$.
+Denote $(v'_1,v'_2)=(\inprod{g_1}{g_2},\inprod{h_1}{h_2})$.
  The constant coefficient of the LHS is $2(v'_1+\gamma v'_2)$.
 To satisfy the equation in the claim for some $S$, we need
  \[v'_1+\gamma v'_2=v_1+\gamma v_2,\]
@@ -906,7 +907,7 @@ which can hold for at most one $\gamma$ when $(v_1,v_2)\neq (v'_1,v'_2)$.
 \subsection{Multilinear evaluations as inner products of univariate polynomials}\label{sec:eq-polys}
 For $u\in \F^{t}$ define the polynomial $\eqpol{u} (X)\defeq  \sumi{b}\eq(i,u)X^i$. 
 Note that for $g(X)\in \polysofdeg{b}$, we have
-\[<\eqpol{u},g>=\sumi{b}\eq(i,u) g_i = \mle{g}(u).\]
+\[\inprod{\eqpol{u}}{g}=\sumi{b}\eq(i,u) g_i = \mle{g}(u).\]
 
 \noindent
 As leveraged in \cite{halo}, we have the product formula
@@ -922,7 +923,7 @@ $\mle{g}(u_1)=v_1$ and $\mle{h}(u_2)=v_2$.
  \item\label{item:eqsec4} \prv sends commitment to $S$ such that
 \[ g(X)P_{u_1}(1/X)+ g(1/X) P_{u_1}(X) + \gamma(h(X)P_{u_2}(1/X) + h(1/X)P_{u_2}(X))\]
 \[= 2(v_1+\gamma v_2) + X\cdot S(X)+(1/X)S(1/X).\]
-\item \ver chooses a random $\zeta\in \F$.
+\item \ver chooses a random $\zeta\in \Fstar$.
 \item \prv sends and proves correctness of the values of $g,h$ and $S$ on $\zeta,1/\zeta$. 
 \item \ver evaluates $P_{u_1},P_{u_2}$ at $\zeta,1/\zeta$. 
 \item \ver checks the equation in step \ref{item:eqsec4} holds at $\zeta$.
@@ -939,7 +940,7 @@ This motivates the following protocol.
 \begin{enumerate}
  \item 
 \prv sends a commitment \d to $D(X)$.
-\item \ver chooses random $\zeta \in \F$.
+\item \ver chooses random $\zeta \in \Fstar$.
 \item \prv sends $\dzeta \defeq D(\zeta), \ginv \defeq  g(1/\zeta)$, and uses KZG to prove their correctness.
 \item \ver can now check $D$'s correctness on   $\zeta$, using the equation
 \[\dzeta \stackrel{?}{=}\zeta^{b-1} \ginv.\]
@@ -1020,7 +1021,7 @@ Hence, we can think of $h$ as a commitment to the restricted multilinear $\mle{f
 \end{enumerate}
 \item  \textsf{KZG evaluations:} 
 \begin{enumerate}
-\item  \ver sends a random evaluation challenge $\zeta \in \F$.
+\item  \ver sends a random evaluation challenge $\zeta \in \Fstar$.
 \item \prv sends the values $ \gzeta \defeq g(\zeta), \ginv \defeq g(1/\zeta), \hzeta \defeq h(\zeta), \hinv \defeq h(1/\zeta), \szeta \defeq S(\zeta),\sinv\defeq S(1/\zeta)$.\label{step:evals}
 \item\label{step:computevals} \ver computes the expected values for $D(\zeta)$ and $h(\alpha)$ assuming the equations in steps \ref{step:sendS},\ref{step:sendD} are satisfied. That is,  $\dzeta\defeq  \zeta^{b-1} \ginv$, and 
 \[\halpha\defeq \left(\gzeta \eqpol{u_1}(1/\zeta) + \ginv \eqpol{u_1}(\zeta) + \gamma(\hzeta \eqpol{u_2}(1/\zeta) + \hinv \eqpol{u_2}(\zeta)-2v) - \zeta \szeta - (1/\zeta)\sinv\right)/2.\]
@@ -1077,7 +1078,7 @@ $ D(\zeta) = \zeta^{b-1} g(1/\zeta)$,
 \end{enumerate}
 Note that items \ref{item:first}-\ref{item:last} can be viewed as rational equations evaluated at $\zeta$.
 Let $E_1$ be the event that $E_0$ didn't occur, and one of the equations in steps \ref{item:first}-\ref{item:last}
-doesn't hold as a rational identity. Multiplying denominators, we have from the Schwarz-Zippel Lemma that $E_1$ occurs with probability at most $2n/|\F| = \negl$ over $\zeta \in \F$.
+doesn't hold as a rational identity. Multiplying denominators, we have from the Schwarz-Zippel Lemma that $E_1$ occurs with probability at most $6n/|\F| = \negl$ over $\zeta \in \F$.
 Assuming $E_0$ and $E_1$ didn't occur we have that 
 
 \begin{enumerate}
