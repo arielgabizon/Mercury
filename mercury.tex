@@ -1029,7 +1029,7 @@ Hence, we can think of $h$ as a commitment to the restricted multilinear $\mle{f
 \[H(X) \defeq \frac{f(X)-(\zeta^b-\alpha)q(X)-\gzeta}{X-\zeta}.\]
 \item \prv computes and sends a batched KZG opening proof \prfother for the values  sent in step \ref{step:evals} and computed by \ver in step \ref{step:computevals}, as described in Section 4 of \cite{shplonk}.
 \item \ver checks the proof \prfzeta via pairings as in \cite{kzg}:\label{step:checkfirst}
-   \[e(\cm-\enc{\zeta^b-\alpha}\cdot \q -\gzeta,\enctwo{1})=e(\prfzeta,\enctwo{x-\zeta}).\]
+   \[e(\cm-\enc{\zeta^b-\alpha}\cdot \q -\enc{\gzeta},\enctwo{1})=e(\prfzeta,\enctwo{x-\zeta}).\]
    \item \ver checks the opening proof \prfother as described in \cite{shplonk}. \label{step:checklast} 
 %    \item \ver checks the equation
 % 
@@ -1120,7 +1120,7 @@ Thus, we have
 \[=\sumj{b} \eq(j,u_2) h_j = \mle{h}(u_2) = v.\]
 
 \section*{Acknowledgements}
-We thank Benedikt B{\"{u}}nz, Tohru Kohrita and Justin Thaler for comments and corrections.
+We thank Benedikt B{\"{u}}nz, Tohru Kohrita, Marek Sefranek and Justin Thaler for comments and corrections.
 \bibliographystyle{alpha}
 \bibliography{references}
 \appendix
